@@ -1,6 +1,5 @@
 package pl.kurs.geometricshapes.dto;
 
-
 import pl.kurs.geometricshapes.models.ShapeType;
 
 public class RectangleDto extends ShapesDto {
@@ -27,6 +26,11 @@ public class RectangleDto extends ShapesDto {
 
     @Override
     public ShapeType getType() {
-        return ShapeType.RECTANGLE;
+        return super.getType();
+    }
+
+    @Override
+    public void setType(ShapeType type) {
+        super.setType(type);
     }
 }

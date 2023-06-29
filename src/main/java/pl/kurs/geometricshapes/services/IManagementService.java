@@ -1,5 +1,7 @@
 package pl.kurs.geometricshapes.services;
 
+import pl.kurs.geometricshapes.models.ShapeType;
+
 import java.util.List;
 
 public interface IManagementService<T> {

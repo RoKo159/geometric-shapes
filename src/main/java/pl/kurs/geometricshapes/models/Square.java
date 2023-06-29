@@ -9,37 +9,39 @@ import java.util.Objects;
 public class Square extends Shapes {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_square")
-    private Long id;
-
     private double width;
-
+    private double area;
+    private double perimeter;
 
     public Square() {
     }
 
-    public Square(double width, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double area, double perimeter) {
-        super(version, createdBy, createdAt, lastModifiedAt, lastModifiedBy, area, perimeter);
+    public Square(Long id, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double width) {
+        super(id, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.width = width;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        updateAreaAndPerimeter();
     }
 
     public double getWidth() {
         return width;
     }
 
-    public void setWidth(double width) {
-        this.width = width;
+    public void setWidth(double length) {
+        this.width = length;
+        updateAreaAndPerimeter();
+    }
+
+    public double getArea() {
+        return this.area;
+    }
+
+    public double getPerimeter() {
+        return this.perimeter;
+    }
+
+    private void updateAreaAndPerimeter() {
+        this.area = width * width;
+        this.perimeter = 4 * width;
     }
 
     @Override
@@ -48,29 +50,20 @@ public class Square extends Shapes {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Square square = (Square) o;
-        return Double.compare(square.width, width) == 0 && Objects.equals(id, square.id);
+        return Double.compare(square.width, width) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, width);
+        return Objects.hash(super.hashCode(), width);
     }
 
     @Override
     public String toString() {
-        return super.toString() +
-                ", id=" + id +
-                ", width=" + width +
-                "} ";
-    }
-
-    @Override
-    public double getArea() {
-        return width * width;
-    }
-
-    @Override
-    public double getPerimeter() {
-        return 4 * width;
+        return "Square{" +
+                "length=" + width +
+                ", area=" + area +
+                ", perimeter=" + perimeter +
+                "} " + super.toString();
     }
 }

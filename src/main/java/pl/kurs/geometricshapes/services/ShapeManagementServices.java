@@ -2,17 +2,18 @@ package pl.kurs.geometricshapes.services;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.kurs.geometricshapes.exceptions.WrongEntityException;
+import pl.kurs.geometricshapes.models.ShapeType;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class GenericManagementServices<T extends Identificationable, R extends JpaRepository<T, Long>> implements IManagementService<T> {
+public abstract class ShapeManagementServices<T extends Identificationable, R extends JpaRepository<T, Long>> implements IManagementService<T> {
 
     protected R repository;
 
-    public GenericManagementServices(R repository) {
+    public ShapeManagementServices(R repository) {
         this.repository = repository;
     }
 
@@ -53,6 +54,5 @@ public abstract class GenericManagementServices<T extends Identificationable, R 
     public List<T> getAll() {
         return repository.findAll();
     }
-
 
 }

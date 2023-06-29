@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class SquareManagementServices extends GenericManagementServices<Square, SquareRepository> {
+public class SquareManagementServices extends ShapeManagementServices<Square, SquareRepository> {
 
     public SquareManagementServices(SquareRepository repository) {
         super(repository);
@@ -33,4 +33,5 @@ public class SquareManagementServices extends GenericManagementServices<Square, 
     public List<Square> findAllByWidthBetween(double widthFrom, double widthTo) {
         return repository.findAllByWidthBetween(widthFrom, widthTo);
     }
+
 }
