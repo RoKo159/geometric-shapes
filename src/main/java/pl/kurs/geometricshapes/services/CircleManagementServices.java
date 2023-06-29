@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class CircleManagementServices extends GenericManagementServices<Circle, CircleRepository> {
+public class CircleManagementServices extends ShapeManagementServices<Circle, CircleRepository> {
 
     public CircleManagementServices(CircleRepository repository) {
         super(repository);
@@ -34,5 +34,4 @@ public class CircleManagementServices extends GenericManagementServices<Circle, 
     public List<Circle> findAllByRadiusBetween(double radiusFrom, double radiusTo) {
         return repository.findAllByRadiusBetween(radiusFrom, radiusTo);
     }
-
 }

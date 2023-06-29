@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class RectangleManagementServices extends GenericManagementServices<Rectangle, RectangleRepository> {
+public class RectangleManagementServices extends ShapeManagementServices<Rectangle, RectangleRepository> {
 
     public RectangleManagementServices(RectangleRepository repository) {
         super(repository);
@@ -33,5 +33,4 @@ public class RectangleManagementServices extends GenericManagementServices<Recta
     public List<Rectangle> findAllByWidthBetweenAndAndLengthBetween(double widthFrom, double widthTo, double lengthFrom, double lengthTo) {
         return repository.findAllByWidthBetweenAndAndLengthBetween(widthFrom, widthTo, lengthFrom, lengthTo);
     }
-
 }

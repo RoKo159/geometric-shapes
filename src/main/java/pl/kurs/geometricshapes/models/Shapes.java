@@ -11,6 +11,11 @@ import java.util.Objects;
 public abstract class Shapes implements Serializable, Identificationable {
 
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_shape")
+    private Long id;
+
     private String version;
 
     private String createdBy;
@@ -21,21 +26,26 @@ public abstract class Shapes implements Serializable, Identificationable {
 
     private String lastModifiedBy;
 
-    private double area = getArea();
-
-    private double perimeter = getPerimeter();
-
     public Shapes() {
     }
 
-    public Shapes(String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double area, double perimeter) {
+    public Shapes(Long id, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy) {
+        this.id = id;
         this.version = version;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
         this.lastModifiedBy = lastModifiedBy;
-        this.area = area;
-        this.perimeter = perimeter;
+
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getVersion() {
@@ -78,38 +88,28 @@ public abstract class Shapes implements Serializable, Identificationable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public void setArea(double area) {
-        this.area = area;
-    }
-
-    public void setPerimeter(double perimeter) {
-        this.perimeter = perimeter;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Shapes shapes = (Shapes) o;
-        return Double.compare(shapes.area, area) == 0 && Double.compare(shapes.perimeter, perimeter) == 0 && Objects.equals(version, shapes.version) && Objects.equals(createdBy, shapes.createdBy) && Objects.equals(createdAt, shapes.createdAt) && Objects.equals(lastModifiedAt, shapes.lastModifiedAt) && Objects.equals(lastModifiedBy, shapes.lastModifiedBy);
+        return Objects.equals(id, shapes.id) && Objects.equals(version, shapes.version) && Objects.equals(createdBy, shapes.createdBy) && Objects.equals(createdAt, shapes.createdAt) && Objects.equals(lastModifiedAt, shapes.lastModifiedAt) && Objects.equals(lastModifiedBy, shapes.lastModifiedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(version, createdBy, createdAt, lastModifiedAt, lastModifiedBy, area, perimeter);
+        return Objects.hash(id, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
     }
 
     @Override
     public String toString() {
         return "Shapes{" +
-                "version='" + version + '\'' +
+                "id=" + id +
+                ", version='" + version + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdAt=" + createdAt +
                 ", lastModifiedAt=" + lastModifiedAt +
                 ", lastModifiedBy='" + lastModifiedBy + '\'' +
-                ", area=" + area +
-                ", perimeter=" + perimeter +
                 '}';
     }
 

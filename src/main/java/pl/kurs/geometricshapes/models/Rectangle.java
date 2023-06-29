@@ -9,31 +9,19 @@ import java.util.Objects;
 public class Rectangle extends Shapes {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_rectangle")
-    private Long id;
-
     private double length;
-
     private double width;
+    private double area;
+    private double perimeter;
 
     public Rectangle() {
     }
 
-    public Rectangle(double length, double width, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double area, double perimeter) {
-        super(version, createdBy, createdAt, lastModifiedAt, lastModifiedBy, area, perimeter);
+    public Rectangle(Long id, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
+        super(id, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.length = length;
         this.width = width;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        updateAreaAndPerimeter();
     }
 
     public double getLength() {
@@ -42,6 +30,7 @@ public class Rectangle extends Shapes {
 
     public void setLength(double length) {
         this.length = length;
+        updateAreaAndPerimeter();
     }
 
     public double getWidth() {
@@ -50,6 +39,20 @@ public class Rectangle extends Shapes {
 
     public void setWidth(double width) {
         this.width = width;
+        updateAreaAndPerimeter();
+    }
+
+    public double getArea() {
+        return this.area;
+    }
+
+    public double getPerimeter() {
+        return this.perimeter;
+    }
+
+    private void updateAreaAndPerimeter() {
+        this.area = length * width;
+        this.perimeter = 2 * (length + width);
     }
 
     @Override
@@ -58,32 +61,21 @@ public class Rectangle extends Shapes {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Rectangle rectangle = (Rectangle) o;
-        return Double.compare(rectangle.length, length) == 0 && Double.compare(rectangle.width, width) == 0 && Objects.equals(id, rectangle.id);
+        return Double.compare(rectangle.length, length) == 0 && Double.compare(rectangle.width, width) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, length, width);
+        return Objects.hash(super.hashCode(), length, width);
     }
 
     @Override
     public String toString() {
         return "Rectangle{" +
-                "id=" + id +
-                ", length=" + length +
+                "length=" + length +
                 ", width=" + width +
+                ", area=" + area +
+                ", perimeter=" + perimeter +
                 "} " + super.toString();
     }
-
-    @Override
-    public double getArea() {
-        return length * width;
-    }
-
-    @Override
-    public double getPerimeter() {
-        return 2 * length + 2 * width;
-    }
-
-
 }

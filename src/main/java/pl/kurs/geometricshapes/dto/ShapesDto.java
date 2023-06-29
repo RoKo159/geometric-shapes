@@ -1,20 +1,7 @@
 package pl.kurs.geometricshapes.dto;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import lombok.Data;
-import pl.kurs.geometricshapes.commands.CreateCircleCommand;
-import pl.kurs.geometricshapes.commands.CreateRectangleCommand;
-import pl.kurs.geometricshapes.commands.CreateSquareCommand;
 import pl.kurs.geometricshapes.models.ShapeType;
 
 import java.time.LocalDate;
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = CreateRectangleCommand.class, name = "RECTANGLE"),
-        @JsonSubTypes.Type(value = CreateSquareCommand.class, name = "SQUARE"),
-        @JsonSubTypes.Type(value = CreateCircleCommand.class, name = "CIRCLE")
-})
 
 public abstract class ShapesDto {
 
@@ -27,6 +14,7 @@ public abstract class ShapesDto {
     private String lastModifiedBy;
     private double area;
     private double perimeter;
+
 
     public Long getId() {
         return id;
