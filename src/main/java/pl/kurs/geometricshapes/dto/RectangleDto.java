@@ -24,13 +24,4 @@ public class RectangleDto extends ShapesDto {
         this.width = width;
     }
 
-    @Override
-    public ShapeType getType() {
-        return super.getType();
-    }
-
-    @Override
-    public void setType(ShapeType type) {
-        super.setType(type);
-    }
 }

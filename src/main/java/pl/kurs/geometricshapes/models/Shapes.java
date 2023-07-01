@@ -10,11 +10,13 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class Shapes implements Serializable, Identificationable {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_shape")
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private ShapeType type;
 
     private String version;
 
@@ -29,14 +31,14 @@ public abstract class Shapes implements Serializable, Identificationable {
     public Shapes() {
     }
 
-    public Shapes(Long id, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy) {
+    public Shapes(Long id, ShapeType type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy) {
         this.id = id;
+        this.type = type;
         this.version = version;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
         this.lastModifiedBy = lastModifiedBy;
-
     }
 
     @Override
@@ -46,6 +48,14 @@ public abstract class Shapes implements Serializable, Identificationable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public ShapeType getType() {
+        return type;
+    }
+
+    public void setType(ShapeType shapeType) {
+        this.type = shapeType;
     }
 
     public String getVersion() {
@@ -93,18 +103,19 @@ public abstract class Shapes implements Serializable, Identificationable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Shapes shapes = (Shapes) o;
-        return Objects.equals(id, shapes.id) && Objects.equals(version, shapes.version) && Objects.equals(createdBy, shapes.createdBy) && Objects.equals(createdAt, shapes.createdAt) && Objects.equals(lastModifiedAt, shapes.lastModifiedAt) && Objects.equals(lastModifiedBy, shapes.lastModifiedBy);
+        return Objects.equals(id, shapes.id) && type == shapes.type && Objects.equals(version, shapes.version) && Objects.equals(createdBy, shapes.createdBy) && Objects.equals(createdAt, shapes.createdAt) && Objects.equals(lastModifiedAt, shapes.lastModifiedAt) && Objects.equals(lastModifiedBy, shapes.lastModifiedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+        return Objects.hash(id, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
     }
 
     @Override
     public String toString() {
         return "Shapes{" +
                 "id=" + id +
+                ", shapeType=" + type +
                 ", version='" + version + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdAt=" + createdAt +
@@ -116,6 +127,4 @@ public abstract class Shapes implements Serializable, Identificationable {
     public abstract double getArea();
 
     public abstract double getPerimeter();
-
-
 }

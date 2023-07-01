@@ -18,6 +18,4 @@ public interface SquareRepository extends JpaRepository<Square, Long> {
 
     List<Square> findAllByWidthBetween(double widthFrom, double widthTo);
 
-
-
 }
