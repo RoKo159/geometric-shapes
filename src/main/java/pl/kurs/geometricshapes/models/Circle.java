@@ -16,10 +16,10 @@ public class Circle extends Shapes {
     public Circle() {
     }
 
-    public Circle(Long id, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double radius) {
-        super(id, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Circle(Long id, ShapeType shapeType, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double radius) {
+        super(id, shapeType, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.radius = radius;
-        updateAreaAndCircumference();
+        updateAreaAndPerimeter();
     }
 
     public double getRadius() {
@@ -28,7 +28,7 @@ public class Circle extends Shapes {
 
     public void setRadius(double radius) {
         this.radius = radius;
-        updateAreaAndCircumference();
+        updateAreaAndPerimeter();
     }
 
     public double getArea() {
@@ -39,7 +39,7 @@ public class Circle extends Shapes {
         return this.perimeter;
     }
 
-    private void updateAreaAndCircumference() {
+    private void updateAreaAndPerimeter() {
         this.area = Math.PI * radius * radius;
         this.perimeter = 2 * Math.PI * radius;
     }

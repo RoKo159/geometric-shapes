@@ -1,0 +1,2 @@
+insert into circle (id_shape ,created_at, created_by, last_modified_at, last_modified_by, type, version, area, perimeter, radius) values (1, '2023-07-01', 'roko', '2023-07-01', 'roko', 'CIRCLE', 'v1', 314.1592653589793, 62.83185307179586, 10)
+insert into circle (id_shape ,created_at, created_by, last_modified_at, last_modified_by, type, version, area, perimeter, radius) values (2, '2023-07-01', 'roko', '2023-07-01', 'roko', 'CIRCLE', 'v1', 1256.6370614359173, 125.66370614359172, 20)

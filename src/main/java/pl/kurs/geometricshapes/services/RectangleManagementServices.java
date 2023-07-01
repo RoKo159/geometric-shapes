@@ -14,18 +14,22 @@ public class RectangleManagementServices extends ShapeManagementServices<Rectang
         super(repository);
     }
 
+    @Override
     public List<Rectangle> findAllByAreaBetween(double areaFrom, double areaTo) {
         return repository.findAllByAreaBetween(areaFrom, areaTo);
     }
 
+    @Override
     public List<Rectangle> findAllByPerimeterBetween(double perimeterFrom, double perimeterTo) {
         return repository.findAllByPerimeterBetween(perimeterFrom, perimeterTo);
     }
 
+    @Override
     public List<Rectangle> findAllByCreatedAtBetween(LocalDate dateFrom, LocalDate dateTo) {
         return repository.findAllByCreatedAtBetween(dateFrom, dateTo);
     }
 
+    @Override
     public List<Rectangle> findAllByCreatedBy(String createdBy) {
         return repository.findAllByCreatedBy(createdBy);
     }

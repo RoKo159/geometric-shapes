@@ -19,7 +19,7 @@ public enum ShapeType {
     },
     RECTANGLE {
         @Override
-        public Class<? extends Shapes> getShapeClass() {
+        public Class<Rectangle> getShapeClass() {
             return Rectangle.class;
         }
 

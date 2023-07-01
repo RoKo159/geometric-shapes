@@ -17,12 +17,14 @@ public class Rectangle extends Shapes {
     public Rectangle() {
     }
 
-    public Rectangle(Long id, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
-        super(id, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+
+    public Rectangle(Long id, ShapeType shapeType, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
+        super(id, shapeType, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.length = length;
         this.width = width;
         updateAreaAndPerimeter();
     }
+
 
     public double getLength() {
         return length;
