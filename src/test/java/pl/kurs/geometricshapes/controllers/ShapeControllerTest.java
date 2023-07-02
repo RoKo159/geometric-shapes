@@ -15,6 +15,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
 import pl.kurs.geometricshapes.commands.CreateCircleCommand;
+import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.config.ModelMapperConfig;
 import pl.kurs.geometricshapes.dto.CircleDto;
 import pl.kurs.geometricshapes.dto.RectangleDto;
@@ -29,14 +30,10 @@ import pl.kurs.geometricshapes.services.SquareManagementServices;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
@@ -54,7 +51,6 @@ public class ShapeControllerTest {
 
     HttpHeaders headers = new HttpHeaders();
 
-
     ModelMapper modelMapper = new ModelMapper();
 
     private ModelMapperConfig modelMapperConfig = Mockito.mock(ModelMapperConfig.class);
@@ -65,8 +61,6 @@ public class ShapeControllerTest {
 
     private SquareManagementServices squareServices = Mockito.mock(SquareManagementServices.class);
 
-    private RectangleManagementServices rectangleManagementServices = Mockito.mock(RectangleManagementServices.class);
-
     private ShapeController shapeController = new ShapeController(modelMapperConfig, circleServices, rectangleServices, squareServices);
 
 
@@ -76,6 +70,26 @@ public class ShapeControllerTest {
         shapeServicesMap.put(ShapeType.CIRCLE, circleServices);
         shapeServicesMap.put(ShapeType.SQUARE, squareServices);
         shapeServicesMap.put(ShapeType.RECTANGLE, rectangleServices);
+
+        CreateShapeCommand circle1 = mock(CreateShapeCommand.class);
+        when(circle1.getType()).thenReturn(ShapeType.CIRCLE);
+        when(circle1.getParameters()).thenReturn(new double[]{10.0});
+
+        CreateShapeCommand circle2 = mock(CreateShapeCommand.class);
+        when(circle2.getType()).thenReturn(ShapeType.CIRCLE);
+        when(circle2.getParameters()).thenReturn(new double[]{20.0});
+
+        CreateShapeCommand square = mock(CreateShapeCommand.class);
+        when(square.getType()).thenReturn(ShapeType.SQUARE);
+        when(square.getParameters()).thenReturn(new double[]{10.0});
+
+        CreateShapeCommand rectangle = mock(CreateShapeCommand.class);
+        when(rectangle.getType()).thenReturn(ShapeType.RECTANGLE);
+        when(rectangle.getParameters()).thenReturn(new double[]{10.0, 20.0});
+
+        when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);
+
+        List<CreateShapeCommand> createShapeCommandList = Arrays.asList(circle1, circle2, square, rectangle);
     }
 
     private URI createServerAddress(String uri) throws URISyntaxException {
@@ -83,7 +97,7 @@ public class ShapeControllerTest {
     }
 
     @Test
-    public void testShouldReturn() throws URISyntaxException, JSONException {
+    public void testShouldReturnExactlySameDataFromInsertDataSQl() throws URISyntaxException, JSONException {
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         ResponseEntity<String> response = testRestTemplate.exchange(createServerAddress("/api/v1/shapes/circle"), HttpMethod.GET, entity, String.class);
         String expected = "[{\"id\":1,\"type\":\"CIRCLE\",\"version\":v1,\"createdBy\":roko,\"createdAt\":\"2023-07-01\",\"lastModifiedAt\":2023-07-01,\"lastModifiedBy\":roko,\"area\":314.1592653589793,\"perimeter\":62.83185307179586,\"radius\":10.0}, {\"id\":2,\"type\":\"CIRCLE\",\"version\":\"v1\",\"createdBy\":\"roko\",\"createdAt\":\"2023-07-01\",\"lastModifiedAt\":\"2023-07-01\",\"lastModifiedBy\":\"roko\",\"area\":1256.6370614359173,\"perimeter\":125.66370614359172,\"radius\":20.0}]";
@@ -92,21 +106,17 @@ public class ShapeControllerTest {
 
 
     @Test
-    void createShape() {
+    void shouldCheckTheReturnCodeAndTheCorrespondingBody() {
 
         // Given
-        CreateCircleCommand circleCommand = new CreateCircleCommand();
-        Circle circle = new Circle();
-        circleCommand.setType(ShapeType.CIRCLE);
-        circleCommand.setParameters(new double[]{5.0});
         CircleDto circleDto = new CircleDto();
-
-        // Mock behaviors
+        CreateShapeCommand createShapeCommand = mock(CreateShapeCommand.class);
+        when(createShapeCommand.getType()).thenReturn(ShapeType.CIRCLE);
+        when(createShapeCommand.getParameters()).thenReturn(new double[]{10.0});
         when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);
-        when(circleServices.add(any(Circle.class))).thenReturn(circle);
 
         // When
-        ResponseEntity<ShapesDto> result = shapeController.createShape(circleCommand);
+        ResponseEntity<ShapesDto> result = shapeController.createShape(createShapeCommand);
 
         // Then
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
@@ -135,6 +145,7 @@ public class ShapeControllerTest {
         assertEquals(CircleDto.class, result.getBody().get(0).getClass());
     }
 
+
     @Test
     void getShapeByAreaBetweenMinAndMax() {
 
@@ -144,7 +155,8 @@ public class ShapeControllerTest {
 
         Circle circle1 = new Circle(1L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 3.0);
         Circle circle2 = new Circle(2L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 4.0);
-        List<Circle> circleList = Arrays.asList(circle1, circle2);
+        Circle circle3 = new Circle(2L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 100.0);
+        List<Circle> circleList = Arrays.asList(circle1, circle2, circle3);
 
         // Mock behaviors
         when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);
@@ -170,8 +182,6 @@ public class ShapeControllerTest {
         Circle circle2 = new Circle(2L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 4.0);
         List<Circle> circleList = Arrays.asList(circle1, circle2);
 
-        ShapeController shapeController = new ShapeController(modelMapperConfig, circleServices, rectangleServices, squareServices);
-
         // Mock behaviors
         when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);
         when(circleServices.findAllByPerimeterBetween(perimeterFrom, perimeterTo)).thenReturn(circleList);
@@ -195,8 +205,6 @@ public class ShapeControllerTest {
         Circle circle1 = new Circle(1L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 3.0);
         Circle circle2 = new Circle(2L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 4.0);
         List<Circle> circleList = Arrays.asList(circle1, circle2);
-
-        ShapeController shapeController = new ShapeController(modelMapperConfig, circleServices, rectangleServices, squareServices);
 
         // Mock behaviors
         when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);

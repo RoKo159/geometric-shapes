@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import pl.kurs.geometricshapes.commands.CreateCircleCommand;
 import pl.kurs.geometricshapes.commands.CreateRectangleCommand;
 import pl.kurs.geometricshapes.commands.CreateSquareCommand;
-import pl.kurs.geometricshapes.dto.CircleDto;
 import pl.kurs.geometricshapes.models.Circle;
 import pl.kurs.geometricshapes.models.Rectangle;
 import pl.kurs.geometricshapes.models.Square;
