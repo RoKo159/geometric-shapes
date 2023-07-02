@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import pl.kurs.geometricshapes.models.ShapeType;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CreateRectangleCommand.class, name = "RECTANGLE"),
@@ -13,7 +17,10 @@ import pl.kurs.geometricshapes.models.ShapeType;
 
 public abstract class CreateShapeCommand {
 
+    @NotBlank
     private ShapeType type;
+    @Positive
+    @NotBlank
     private double[] parameters;
 
 

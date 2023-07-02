@@ -16,8 +16,8 @@ public class Square extends Shapes {
     public Square() {
     }
 
-    public Square(Long id, ShapeType shapeType, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double width) {
-        super(id, shapeType, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Square(Long id, ShapeType type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double width) {
+        super(id, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.width = width;
         updateAreaAndPerimeter();
     }
