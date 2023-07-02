@@ -40,6 +40,7 @@ public class ShapeController {
         ShapeManagementServices shapeManagementServices = shapeServices.get(shapeType);
         Shapes shapeForSave = modelMapperConfig.modelMapper().map(shapeCommand, shapeType.getShapeClass());
         shapeForSave.setCreatedAt(LocalDate.now());
+        shapeForSave.setLastModifiedAt(LocalDate.now());
         shapeManagementServices.add(shapeForSave);
         ShapesDto shapeDto = modelMapperConfig.modelMapper().map(shapeForSave, shapeType.getShapeDtoClass());
         return ResponseEntity.status(HttpStatus.CREATED).body(shapeDto);

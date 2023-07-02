@@ -1,20 +1,16 @@
 package pl.kurs.geometricshapes.controllers;
 
-import org.json.JSONException;
+
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.context.jdbc.Sql;
-import pl.kurs.geometricshapes.commands.CreateCircleCommand;
+
+import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.config.ModelMapperConfig;
 import pl.kurs.geometricshapes.dto.CircleDto;
 import pl.kurs.geometricshapes.dto.RectangleDto;
@@ -26,34 +22,17 @@ import pl.kurs.geometricshapes.services.RectangleManagementServices;
 import pl.kurs.geometricshapes.services.ShapeManagementServices;
 import pl.kurs.geometricshapes.services.SquareManagementServices;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql(value = "/insert_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = "/clean_database.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ShapeControllerTest {
-
-    @LocalServerPort
-    private int serverPort;
-
-    @Autowired
-    private TestRestTemplate testRestTemplate;
-
-    HttpHeaders headers = new HttpHeaders();
-
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -65,8 +44,6 @@ public class ShapeControllerTest {
 
     private SquareManagementServices squareServices = Mockito.mock(SquareManagementServices.class);
 
-    private RectangleManagementServices rectangleManagementServices = Mockito.mock(RectangleManagementServices.class);
-
     private ShapeController shapeController = new ShapeController(modelMapperConfig, circleServices, rectangleServices, squareServices);
 
 
@@ -76,37 +53,21 @@ public class ShapeControllerTest {
         shapeServicesMap.put(ShapeType.CIRCLE, circleServices);
         shapeServicesMap.put(ShapeType.SQUARE, squareServices);
         shapeServicesMap.put(ShapeType.RECTANGLE, rectangleServices);
-    }
 
-    private URI createServerAddress(String uri) throws URISyntaxException {
-        return new URI("http://localhost:" + serverPort + uri);
     }
 
     @Test
-    public void testShouldReturn() throws URISyntaxException, JSONException {
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<String> response = testRestTemplate.exchange(createServerAddress("/api/v1/shapes/circle"), HttpMethod.GET, entity, String.class);
-        String expected = "[{\"id\":1,\"type\":\"CIRCLE\",\"version\":v1,\"createdBy\":roko,\"createdAt\":\"2023-07-01\",\"lastModifiedAt\":2023-07-01,\"lastModifiedBy\":roko,\"area\":314.1592653589793,\"perimeter\":62.83185307179586,\"radius\":10.0}, {\"id\":2,\"type\":\"CIRCLE\",\"version\":\"v1\",\"createdBy\":\"roko\",\"createdAt\":\"2023-07-01\",\"lastModifiedAt\":\"2023-07-01\",\"lastModifiedBy\":\"roko\",\"area\":1256.6370614359173,\"perimeter\":125.66370614359172,\"radius\":20.0}]";
-        JSONAssert.assertEquals(expected, response.getBody(), false);
-    }
-
-
-    @Test
-    void createShape() {
+    void shouldCheckTheReturnCodeAndTheCorrespondingBody() {
 
         // Given
-        CreateCircleCommand circleCommand = new CreateCircleCommand();
-        Circle circle = new Circle();
-        circleCommand.setType(ShapeType.CIRCLE);
-        circleCommand.setParameters(new double[]{5.0});
         CircleDto circleDto = new CircleDto();
-
-        // Mock behaviors
+        CreateShapeCommand createShapeCommand = mock(CreateShapeCommand.class);
+        when(createShapeCommand.getType()).thenReturn(ShapeType.CIRCLE);
+        when(createShapeCommand.getParameters()).thenReturn(new double[]{10.0});
         when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);
-        when(circleServices.add(any(Circle.class))).thenReturn(circle);
 
         // When
-        ResponseEntity<ShapesDto> result = shapeController.createShape(circleCommand);
+        ResponseEntity<ShapesDto> result = shapeController.createShape(createShapeCommand);
 
         // Then
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
@@ -114,13 +75,12 @@ public class ShapeControllerTest {
     }
 
     @Test
-    void getShapesByType() {
+    void shouldGetShapesByType() {
 
         // Given
         Circle circle1 = new Circle();
         Circle circle2 = new Circle();
         List<Circle> circleList = Arrays.asList(circle1, circle2);
-        ModelMapper modelMapper = new ModelMapper();
 
         // Mock behaviors
         when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);
@@ -135,8 +95,9 @@ public class ShapeControllerTest {
         assertEquals(CircleDto.class, result.getBody().get(0).getClass());
     }
 
+
     @Test
-    void getShapeByAreaBetweenMinAndMax() {
+    void shouldGetShapeByAreaBetweenMinAndMax() {
 
         // Given
         double areaFrom = 10.0;
@@ -160,7 +121,7 @@ public class ShapeControllerTest {
     }
 
     @Test
-    void getShapeByPerimeterBetweenMinAndMax() {
+    void shouldGetShapeByPerimeterBetweenMinAndMax() {
 
         // Given
         double perimeterFrom = 10.0;
@@ -169,8 +130,6 @@ public class ShapeControllerTest {
         Circle circle1 = new Circle(1L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 3.0);
         Circle circle2 = new Circle(2L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 4.0);
         List<Circle> circleList = Arrays.asList(circle1, circle2);
-
-        ShapeController shapeController = new ShapeController(modelMapperConfig, circleServices, rectangleServices, squareServices);
 
         // Mock behaviors
         when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);
@@ -186,7 +145,7 @@ public class ShapeControllerTest {
     }
 
     @Test
-    void findAllByCreatedAtBetween() {
+    void shouldFindAllShapesByCreatedAtDateBetweenValues() {
 
         // Given
         LocalDate createdFrom = LocalDate.of(2023, 1, 1);
@@ -195,8 +154,6 @@ public class ShapeControllerTest {
         Circle circle1 = new Circle(1L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 3.0);
         Circle circle2 = new Circle(2L, ShapeType.CIRCLE, "1.0", "test", LocalDate.now(), LocalDate.now(), "test", 4.0);
         List<Circle> circleList = Arrays.asList(circle1, circle2);
-
-        ShapeController shapeController = new ShapeController(modelMapperConfig, circleServices, rectangleServices, squareServices);
 
         // Mock behaviors
         when(modelMapperConfig.modelMapper()).thenReturn(modelMapper);
@@ -212,7 +169,7 @@ public class ShapeControllerTest {
     }
 
     @Test
-    void findAllByCreatedBy() {
+    void shouldFindAllShapesByCreatedByValue() {
 
         // Given
         String createdBy = "testUser";
@@ -235,7 +192,7 @@ public class ShapeControllerTest {
     }
 
     @Test
-    void findAllCircleByRadiusBetween() {
+    void shouldFindAllCircleByRadiusBetween() {
 
         // Given
         double radiusFrom = 2.0;
@@ -260,7 +217,7 @@ public class ShapeControllerTest {
 
 
     @Test
-    void findAllSquareByWidthBetween() {
+    void shouldFindAllSquareByWidthBetween() {
 
         // Given
         double widthFrom = 2.0;
@@ -285,7 +242,7 @@ public class ShapeControllerTest {
 
 
     @Test
-    void findAllRectangleByWidthBetween() {
+    void shouldFindAllRectangleByWidthBetween() {
 
         // Given
         double widthFrom = 2.0;

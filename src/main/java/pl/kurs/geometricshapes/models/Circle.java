@@ -16,8 +16,8 @@ public class Circle extends Shapes {
     public Circle() {
     }
 
-    public Circle(Long id, ShapeType shapeType, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double radius) {
-        super(id, shapeType, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Circle(Long id, ShapeType type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double radius) {
+        super(id, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.radius = radius;
         updateAreaAndPerimeter();
     }

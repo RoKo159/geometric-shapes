@@ -18,8 +18,8 @@ public class Rectangle extends Shapes {
     }
 
 
-    public Rectangle(Long id, ShapeType shapeType, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
-        super(id, shapeType, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Rectangle(Long id, ShapeType type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
+        super(id, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.length = length;
         this.width = width;
         updateAreaAndPerimeter();
