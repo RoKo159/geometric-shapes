@@ -2,6 +2,7 @@ package pl.kurs.geometricshapes.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.config.ModelMapperConfig;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/shapes")
+@Validated
 public class ShapeController {
 
 
@@ -39,8 +41,6 @@ public class ShapeController {
         ShapeType shapeType = shapeCommand.getType();
         ShapeManagementServices shapeManagementServices = shapeServices.get(shapeType);
         Shapes shapeForSave = modelMapperConfig.modelMapper().map(shapeCommand, shapeType.getShapeClass());
-        shapeForSave.setCreatedAt(LocalDate.now());
-        shapeForSave.setLastModifiedAt(LocalDate.now());
         shapeManagementServices.add(shapeForSave);
         ShapesDto shapeDto = modelMapperConfig.modelMapper().map(shapeForSave, shapeType.getShapeDtoClass());
         return ResponseEntity.status(HttpStatus.CREATED).body(shapeDto);
