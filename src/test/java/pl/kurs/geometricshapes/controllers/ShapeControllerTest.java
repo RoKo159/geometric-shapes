@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 
 
 @AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 public class ShapeControllerTest {
 
     ModelMapper modelMapper = new ModelMapper();
