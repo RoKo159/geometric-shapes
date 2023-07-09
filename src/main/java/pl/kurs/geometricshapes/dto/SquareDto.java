@@ -4,7 +4,6 @@ public class SquareDto extends ShapesDto {
 
     private double width;
 
-
     public double getWidth() {
         return width;
     }

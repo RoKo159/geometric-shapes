@@ -5,12 +5,10 @@ import pl.kurs.geometricshapes.dto.RectangleDto;
 import pl.kurs.geometricshapes.dto.ShapesDto;
 import pl.kurs.geometricshapes.dto.SquareDto;
 
-import java.lang.reflect.Type;
-
 public enum ShapeType {
     CIRCLE {
         @Override
-        public Type getShapeClass() {
+        public Class<Circle> getShapeClass() {
             return Circle.class;
         }
 
@@ -21,7 +19,7 @@ public enum ShapeType {
     },
     RECTANGLE {
         @Override
-        public Type getShapeClass() {
+        public Class<Rectangle> getShapeClass() {
             return Rectangle.class;
         }
 
@@ -32,7 +30,7 @@ public enum ShapeType {
     },
     SQUARE {
         @Override
-        public Type getShapeClass() {
+        public Class<Square> getShapeClass() {
             return Square.class;
         }
 
@@ -42,6 +40,6 @@ public enum ShapeType {
         }
     };
 
-    public abstract Type getShapeClass();
+    public abstract Class<? extends Shapes> getShapeClass();
     public abstract Class<? extends ShapesDto> getShapeDtoClass();
 }

@@ -16,11 +16,21 @@ public class Circle extends Shapes {
     public Circle() {
     }
 
-    public Circle(Long id, ShapeType type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double radius) {
-        super(id, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Circle(Long id, ShapeType type, double[] parameters, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double radius) {
+        super(id, type, parameters, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.radius = radius;
+
+    }
+
+    @Override
+    public void setParameters(double[] parameters) {
+        super.setParameters(parameters);
+        if(parameters != null && parameters.length > 0) {
+            this.radius = parameters[0];
+        }
         updateAreaAndPerimeter();
     }
+
 
     public double getRadius() {
         return radius;
@@ -28,7 +38,6 @@ public class Circle extends Shapes {
 
     public void setRadius(double radius) {
         this.radius = radius;
-        updateAreaAndPerimeter();
     }
 
     public double getArea() {
@@ -63,7 +72,7 @@ public class Circle extends Shapes {
         return "Circle{" +
                 "radius=" + radius +
                 ", area=" + area +
-                ", circumference=" + perimeter +
+                ", perimeter=" + perimeter +
                 "} " + super.toString();
     }
 }

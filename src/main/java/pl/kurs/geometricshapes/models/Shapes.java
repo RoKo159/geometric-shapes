@@ -18,6 +18,9 @@ public abstract class Shapes implements Serializable, Identificationable {
     @Enumerated(EnumType.STRING)
     private ShapeType type;
 
+    @Transient
+    private double[] parameters;
+
     private String version;
 
     private String createdBy;
@@ -31,9 +34,10 @@ public abstract class Shapes implements Serializable, Identificationable {
     public Shapes() {
     }
 
-    public Shapes(Long id, ShapeType type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy) {
+    public Shapes(Long id, ShapeType type, double[] parameters, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy) {
         this.id = id;
         this.type = type;
+        this.parameters = parameters;
         this.version = version;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
@@ -56,6 +60,14 @@ public abstract class Shapes implements Serializable, Identificationable {
 
     public void setType(ShapeType shapeType) {
         this.type = shapeType;
+    }
+
+    public double[] getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(double[] parameters) {
+        this.parameters = parameters;
     }
 
     public String getVersion() {
@@ -123,8 +135,4 @@ public abstract class Shapes implements Serializable, Identificationable {
                 ", lastModifiedBy='" + lastModifiedBy + '\'' +
                 '}';
     }
-
-    public abstract double getArea();
-
-    public abstract double getPerimeter();
 }

@@ -5,7 +5,7 @@ import pl.kurs.geometricshapes.models.ShapeType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
-public abstract class CreateShapeCommand {
+public class CreateShapeCommand {
 
     @NotBlank
     private ShapeType type;
