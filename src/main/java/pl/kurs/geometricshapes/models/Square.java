@@ -16,19 +16,26 @@ public class Square extends Shapes {
     public Square() {
     }
 
-    public Square(Long id, ShapeType type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double width) {
-        super(id, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Square(Long id, ShapeType type, double[] parameters, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double width) {
+        super(id, type, parameters, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.width = width;
+    }
+
+    @Override
+    public void setParameters(double[] parameters) {
+        super.setParameters(parameters);
+        if(parameters != null && parameters.length > 0) {
+            this.width = parameters[0];
+        }
         updateAreaAndPerimeter();
     }
 
     public double getWidth() {
-        return width;
+        return width = width;
     }
 
-    public void setWidth(double length) {
-        this.width = length;
-        updateAreaAndPerimeter();
+    public void setWidth(double width) {
+        this.width = width;
     }
 
     public double getArea() {

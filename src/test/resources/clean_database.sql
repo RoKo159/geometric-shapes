@@ -1,0 +1,1 @@
+DROP SCHEMA geometric_shapes;

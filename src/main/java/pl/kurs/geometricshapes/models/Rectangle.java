@@ -18,13 +18,21 @@ public class Rectangle extends Shapes {
     }
 
 
-    public Rectangle(Long id, ShapeType type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
-        super(id, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Rectangle(Long id, ShapeType type, double[] parameters, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
+        super(id, type, parameters, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.length = length;
         this.width = width;
-        updateAreaAndPerimeter();
     }
 
+    @Override
+    public void setParameters(double[] parameters) {
+        super.setParameters(parameters);
+        if(parameters != null && parameters.length > 0) {
+            this.width = parameters[0];
+            this.length = parameters[1];
+        }
+        updateAreaAndPerimeter();
+    }
 
     public double getLength() {
         return length;
@@ -32,7 +40,6 @@ public class Rectangle extends Shapes {
 
     public void setLength(double length) {
         this.length = length;
-        updateAreaAndPerimeter();
     }
 
     public double getWidth() {
@@ -41,7 +48,6 @@ public class Rectangle extends Shapes {
 
     public void setWidth(double width) {
         this.width = width;
-        updateAreaAndPerimeter();
     }
 
     public double getArea() {

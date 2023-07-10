@@ -1,25 +1,25 @@
 package pl.kurs.geometricshapes.commands;
 
-import pl.kurs.geometricshapes.models.ShapeType;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import java.util.Locale;
 
-public abstract class CreateShapeCommand {
+public class CreateShapeCommand {
 
     @NotBlank
-    private ShapeType type;
+    private String type;
     @Positive
     @NotBlank
     private double[] parameters;
 
 
-    public ShapeType getType() {
-        return type;
+    public void setType(String type) {
+        this.type = type.toUpperCase(Locale.ROOT);
     }
 
-    public void setType(ShapeType type) {
-        this.type = type;
+
+    public String getType() {
+        return this.type;
     }
 
     public double[] getParameters() {
