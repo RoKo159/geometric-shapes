@@ -1,7 +1,5 @@
 package pl.kurs.geometricshapes.models;
 
-import pl.kurs.geometricshapes.commands.CreateShapeCommand;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;

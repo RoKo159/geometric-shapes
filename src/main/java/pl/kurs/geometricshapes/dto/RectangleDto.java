@@ -1,7 +1,5 @@
 package pl.kurs.geometricshapes.dto;
 
-import pl.kurs.geometricshapes.models.ShapeType;
-
 public class RectangleDto extends ShapesDto {
 
     private double length;

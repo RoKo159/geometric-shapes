@@ -1,6 +1,7 @@
 package pl.kurs.geometricshapes.controllers;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +18,7 @@ import pl.kurs.geometricshapes.repository.SquareRepository;
 import pl.kurs.geometricshapes.services.*;
 
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,8 +38,8 @@ public class ShapeController {
     }
 
     @PostMapping
-    public ResponseEntity<ShapesDto> createShape(@RequestBody CreateShapeCommand shapeCommand) {
-        ShapeType shapeType = shapeCommand.getType();
+    public ResponseEntity<ShapesDto> createShape(@RequestBody @Valid CreateShapeCommand shapeCommand) {
+        ShapeType shapeType = ShapeType.valueOf(shapeCommand.getType().toUpperCase(Locale.ROOT));
         Shapes shapeForSave = modelMapper.map(shapeCommand, shapeType.getShapeClass());
         factoryProvider.getFactory(shapeType).createManagementService().add(shapeForSave);
         ShapesDto shapeDto = modelMapper.map(shapeForSave, shapeType.getShapeDtoClass());
@@ -83,7 +85,7 @@ public class ShapeController {
     }
 
     @GetMapping(value = "/created-date-range")
-    public ResponseEntity<List<ShapesDto>> findAllByCreatedAtBetween(@RequestParam("createdfrom") LocalDate createdFrom, @RequestParam("createdto") LocalDate createdTo) {
+    public ResponseEntity<List<ShapesDto>> findAllByCreatedAtBetween(@RequestParam("createdfrom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdFrom, @RequestParam("createdto") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdTo) {
         List<ShapesDto> shapesDtoList = new ArrayList<>();
         for (ManagementServiceFactory<?, ?> factory : factoryProvider.getAllFactories()) {
             List<?> shapes = factory.createManagementService().findAllByCreatedAtBetween(createdFrom, createdTo);

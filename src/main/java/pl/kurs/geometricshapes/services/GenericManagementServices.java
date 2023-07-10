@@ -1,9 +1,7 @@
 package pl.kurs.geometricshapes.services;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.NoRepositoryBean;
 import pl.kurs.geometricshapes.exceptions.WrongEntityException;
-import pl.kurs.geometricshapes.models.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;

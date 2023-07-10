@@ -3,10 +3,8 @@ package pl.kurs.geometricshapes.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import pl.kurs.geometricshapes.models.Rectangle;
 import pl.kurs.geometricshapes.models.ShapeType;
 import pl.kurs.geometricshapes.models.Square;
-import pl.kurs.geometricshapes.repository.RectangleRepository;
 import pl.kurs.geometricshapes.repository.SquareRepository;
 
 @Service
