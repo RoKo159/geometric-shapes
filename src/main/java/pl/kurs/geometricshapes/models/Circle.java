@@ -9,6 +9,11 @@ import java.util.Objects;
 public class Circle extends Shapes {
     private static final long serialVersionUID = 1L;
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_circle")
+    private Long id;
     private double radius;
     private double area;
     private double perimeter;
@@ -16,10 +21,11 @@ public class Circle extends Shapes {
     public Circle() {
     }
 
-    public Circle(Long id, ShapeType type, double[] parameters, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double radius) {
-        super(id, type, parameters, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
-        this.radius = radius;
 
+    public Circle(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, Long id, double radius) {
+        super(parameters, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+        this.id = id;
+        this.radius = radius;
     }
 
     @Override
@@ -31,6 +37,14 @@ public class Circle extends Shapes {
         updateAreaAndPerimeter();
     }
 
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public double getRadius() {
         return radius;
@@ -59,20 +73,22 @@ public class Circle extends Shapes {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Circle circle = (Circle) o;
-        return Double.compare(circle.radius, radius) == 0;
+        return Double.compare(circle.radius, radius) == 0 && Double.compare(circle.area, area) == 0 && Double.compare(circle.perimeter, perimeter) == 0 && Objects.equals(id, circle.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), radius);
+        return Objects.hash(super.hashCode(), id, radius, area, perimeter);
     }
 
     @Override
     public String toString() {
         return "Circle{" +
-                "radius=" + radius +
+                "id=" + id +
+                ", radius=" + radius +
                 ", area=" + area +
                 ", perimeter=" + perimeter +
                 "} " + super.toString();
     }
 }
+

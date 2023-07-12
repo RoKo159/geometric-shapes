@@ -2,6 +2,7 @@ package pl.kurs.geometricshapes.services;
 
 import org.springframework.stereotype.Service;
 import pl.kurs.geometricshapes.models.Circle;
+import pl.kurs.geometricshapes.models.Rectangle;
 import pl.kurs.geometricshapes.repository.CircleRepository;
 
 import java.time.LocalDate;
@@ -33,7 +34,6 @@ public class CircleManagementServices extends GenericManagementServices<Circle, 
     public List<Circle> findAllByCreatedBy(String createdBy) {
         return repository.findAllByCreatedBy(createdBy);
     }
-
 
     public List<Circle> findAllByRadiusBetween(double radiusFrom, double radiusTo) {
         return repository.findAllByRadiusBetween(radiusFrom, radiusTo);

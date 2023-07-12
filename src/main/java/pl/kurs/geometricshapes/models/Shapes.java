@@ -5,21 +5,17 @@ import pl.kurs.geometricshapes.services.Identificationable;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Objects;
 
 @MappedSuperclass
 public abstract class Shapes implements Serializable, Identificationable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_shape")
-    private Long id;
-
-    @Enumerated(EnumType.STRING)
-    private ShapeType type;
 
     @Transient
     private double[] parameters;
+
+    private String type;
 
     private String version;
 
@@ -34,32 +30,14 @@ public abstract class Shapes implements Serializable, Identificationable {
     public Shapes() {
     }
 
-    public Shapes(Long id, ShapeType type, double[] parameters, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy) {
-        this.id = id;
-        this.type = type;
+    public Shapes(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy) {
         this.parameters = parameters;
+        this.type = type;
         this.version = version;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
         this.lastModifiedBy = lastModifiedBy;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ShapeType getType() {
-        return type;
-    }
-
-    public void setType(ShapeType shapeType) {
-        this.type = shapeType;
     }
 
     public double[] getParameters() {
@@ -68,6 +46,14 @@ public abstract class Shapes implements Serializable, Identificationable {
 
     public void setParameters(double[] parameters) {
         this.parameters = parameters;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getVersion() {
@@ -115,19 +101,21 @@ public abstract class Shapes implements Serializable, Identificationable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Shapes shapes = (Shapes) o;
-        return Objects.equals(id, shapes.id) && type == shapes.type && Objects.equals(version, shapes.version) && Objects.equals(createdBy, shapes.createdBy) && Objects.equals(createdAt, shapes.createdAt) && Objects.equals(lastModifiedAt, shapes.lastModifiedAt) && Objects.equals(lastModifiedBy, shapes.lastModifiedBy);
+        return Arrays.equals(parameters, shapes.parameters) && Objects.equals(type, shapes.type) && Objects.equals(version, shapes.version) && Objects.equals(createdBy, shapes.createdBy) && Objects.equals(createdAt, shapes.createdAt) && Objects.equals(lastModifiedAt, shapes.lastModifiedAt) && Objects.equals(lastModifiedBy, shapes.lastModifiedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+        int result = Objects.hash(type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+        result = 31 * result + Arrays.hashCode(parameters);
+        return result;
     }
 
     @Override
     public String toString() {
         return "Shapes{" +
-                "id=" + id +
-                ", shapeType=" + type +
+                "parameters=" + Arrays.toString(parameters) +
+                ", type='" + type + '\'' +
                 ", version='" + version + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdAt=" + createdAt +

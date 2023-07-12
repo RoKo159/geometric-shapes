@@ -9,6 +9,11 @@ import java.util.Objects;
 public class Rectangle extends Shapes {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_rectangle")
+    private Long id;
+
     private double length;
     private double width;
     private double area;
@@ -17,9 +22,8 @@ public class Rectangle extends Shapes {
     public Rectangle() {
     }
 
-
-    public Rectangle(Long id, ShapeType type, double[] parameters, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
-        super(id, type, parameters, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Rectangle(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
+        super(parameters, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.length = length;
         this.width = width;
     }
@@ -32,6 +36,15 @@ public class Rectangle extends Shapes {
             this.length = parameters[1];
         }
         updateAreaAndPerimeter();
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public double getLength() {
@@ -69,18 +82,19 @@ public class Rectangle extends Shapes {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Rectangle rectangle = (Rectangle) o;
-        return Double.compare(rectangle.length, length) == 0 && Double.compare(rectangle.width, width) == 0;
+        return Double.compare(rectangle.length, length) == 0 && Double.compare(rectangle.width, width) == 0 && Double.compare(rectangle.area, area) == 0 && Double.compare(rectangle.perimeter, perimeter) == 0 && Objects.equals(id, rectangle.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), length, width);
+        return Objects.hash(super.hashCode(), id, length, width, area, perimeter);
     }
 
     @Override
     public String toString() {
         return "Rectangle{" +
-                "length=" + length +
+                "id=" + id +
+                ", length=" + length +
                 ", width=" + width +
                 ", area=" + area +
                 ", perimeter=" + perimeter +

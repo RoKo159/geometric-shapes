@@ -1,6 +1,7 @@
 package pl.kurs.geometricshapes.services;
 
 import org.springframework.stereotype.Service;
+import pl.kurs.geometricshapes.models.Rectangle;
 import pl.kurs.geometricshapes.models.Square;
 import pl.kurs.geometricshapes.repository.SquareRepository;
 
