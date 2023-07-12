@@ -1,12 +1,10 @@
 package pl.kurs.geometricshapes.dto;
-import pl.kurs.geometricshapes.models.ShapeType;
 
 import java.time.LocalDate;
 
 public abstract class ShapesDto {
 
-    private Long id;
-    private ShapeType type;
+    private String type;
     private String version;
     private String createdBy;
     private LocalDate createdAt;
@@ -16,19 +14,11 @@ public abstract class ShapesDto {
     private double perimeter;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ShapeType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(ShapeType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

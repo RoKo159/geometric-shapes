@@ -1,7 +1,7 @@
 
 create table circle
 (
-    id_shape         bigint auto_increment primary key,
+    id_circle         bigint auto_increment primary key,
     type             varchar(255) not null,
     area             double       not null,
     created_at       date         null,
@@ -15,7 +15,7 @@ create table circle
 
 create table rectangle
 (
-    id_shape         bigint auto_increment primary key,
+    id_rectangle         bigint auto_increment primary key,
     type             varchar(255) not null,
     area             double       not null,
     created_at       date         null,
@@ -30,7 +30,7 @@ create table rectangle
 
 create table square
 (
-    id_shape         bigint auto_increment primary key,
+    id_square         bigint auto_increment primary key,
     type             varchar(255) not null,
     area             double       not null,
     created_at       date         null,

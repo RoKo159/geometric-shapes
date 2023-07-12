@@ -34,7 +34,7 @@ public class RectangleManagementServices extends GenericManagementServices<Recta
         return repository.findAllByCreatedBy(createdBy);
     }
 
-    public List<Rectangle> findAllByWidthBetweenAndAndLengthBetween(double widthFrom, double widthTo, double lengthFrom, double lengthTo) {
-        return repository.findAllByWidthBetweenAndAndLengthBetween(widthFrom, widthTo, lengthFrom, lengthTo);
+    public List<Rectangle> findAllByWidthBetweenAndLengthBetween(double widthFrom, double widthTo, double lengthFrom, double lengthTo) {
+        return repository.findAllByWidthBetweenAndLengthBetween(widthFrom, widthTo, lengthFrom, lengthTo);
     }
 }

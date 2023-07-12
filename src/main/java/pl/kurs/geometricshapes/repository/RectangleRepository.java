@@ -16,5 +16,5 @@ public interface RectangleRepository extends JpaRepository<Rectangle, Long> {
 
     List<Rectangle> findAllByCreatedBy(String createdBy);
 
-    List<Rectangle> findAllByWidthBetweenAndAndLengthBetween(double widthFrom, double widthTo, double lengthFrom, double lengthTo);
+    List<Rectangle> findAllByWidthBetweenAndLengthBetween(double widthFrom, double widthTo, double lengthFrom, double lengthTo);
 }

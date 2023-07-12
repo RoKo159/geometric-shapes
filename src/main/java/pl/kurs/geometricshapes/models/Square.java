@@ -9,6 +9,11 @@ import java.util.Objects;
 public class Square extends Shapes {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_square")
+    private Long id;
+
     private double width;
     private double area;
     private double perimeter;
@@ -16,8 +21,8 @@ public class Square extends Shapes {
     public Square() {
     }
 
-    public Square(Long id, ShapeType type, double[] parameters, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double width) {
-        super(id, type, parameters, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Square(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double width) {
+        super(parameters, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
         this.width = width;
     }
 
@@ -28,6 +33,15 @@ public class Square extends Shapes {
             this.width = parameters[0];
         }
         updateAreaAndPerimeter();
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public double getWidth() {
@@ -57,20 +71,21 @@ public class Square extends Shapes {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Square square = (Square) o;
-        return Double.compare(square.width, width) == 0;
+        return Double.compare(square.width, width) == 0 && Double.compare(square.area, area) == 0 && Double.compare(square.perimeter, perimeter) == 0 && Objects.equals(id, square.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), width);
+        return Objects.hash(super.hashCode(), id, width, area, perimeter);
     }
 
     @Override
     public String toString() {
-        return "Square{" +
-                "length=" + width +
+        return super.toString() +
+                ", id=" + id +
+                ", width=" + width +
                 ", area=" + area +
                 ", perimeter=" + perimeter +
-                "} " + super.toString();
+                "} ";
     }
 }

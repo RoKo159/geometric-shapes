@@ -12,11 +12,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.kurs.geometricshapes.GeometricShapesApplication;
 import pl.kurs.geometricshapes.commands.CreateShapeCommand;
+import pl.kurs.geometricshapes.commands.UpdateShapeCommand;
 
 import java.time.LocalDate;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -31,7 +31,6 @@ class ShapeControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-
 
     @Test
     void createShape() throws Exception {
@@ -49,6 +48,23 @@ class ShapeControllerTest {
                 .andExpect(jsonPath("$.perimeter").value(31.41592653589793));
     }
 
+    @Test
+    void updateShape() throws Exception {
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand();
+        updateShapeCommand.setId(1L);
+        updateShapeCommand.setType("CIRCLE");
+        updateShapeCommand.setParameters(new double[]{10.0});
+
+        mockMvc.perform(put("http://localhost:8080/api/v1/shapes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateShapeCommand)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type").value("CIRCLE"))
+                .andExpect(jsonPath("$.radius").value(10.0)) //we expect that radius was updated
+                .andExpect(jsonPath("$.area").value(314.1592653589793)) //area and perimeter should be calculated according to new radius
+                .andExpect(jsonPath("$.perimeter").value(62.83185307179586));
+    }
+
 
     @Test
     void getShapesByType() throws Exception {
@@ -57,11 +73,11 @@ class ShapeControllerTest {
         mockMvc.perform(get("http://localhost:8080/api/v1/shapes/" + shapeType)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].type").value(shapeType))
+                .andExpect(jsonPath("$[0].type").value("SQUARE"))
                 .andExpect(jsonPath("$[0].area").value(100.0))
                 .andExpect(jsonPath("$[0].perimeter").value(40.0))
                 .andExpect(jsonPath("$[0].width").value(10))
-                .andExpect(jsonPath("$[1].type").value(shapeType))
+                .andExpect(jsonPath("$[1].type").value("SQUARE"))
                 .andExpect(jsonPath("$[1].area").value(400.0))
                 .andExpect(jsonPath("$[1].perimeter").value(80.0))
                 .andExpect(jsonPath("$[1].width").value(20));
