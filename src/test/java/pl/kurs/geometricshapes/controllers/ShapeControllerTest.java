@@ -33,7 +33,7 @@ class ShapeControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void createShape() throws Exception {
+    void shouldCreateShapeAndReturnStatusCreated() throws Exception {
         CreateShapeCommand createShapeCommand = new CreateShapeCommand();
         createShapeCommand.setType("CIRCLE");
         createShapeCommand.setParameters(new double[]{5.0});
@@ -49,7 +49,7 @@ class ShapeControllerTest {
     }
 
     @Test
-    void updateShape() throws Exception {
+    void shouldUpdateShapeAndReturnStatusOK() throws Exception {
         UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand();
         updateShapeCommand.setId(1L);
         updateShapeCommand.setType("CIRCLE");
@@ -67,7 +67,7 @@ class ShapeControllerTest {
 
 
     @Test
-    void getShapesByType() throws Exception {
+    void shouldGetShapesByTypeAndReturnStatusOK() throws Exception {
         String shapeType = "SQUARE";
 
         mockMvc.perform(get("http://localhost:8080/api/v1/shapes/" + shapeType)
@@ -84,7 +84,7 @@ class ShapeControllerTest {
     }
 
     @Test
-    void getShapeByAreaBetweenMinAndMax() throws Exception {
+    void shouldGetShapeByAreaBetweenMinAndMaxAndReturnStatusOK() throws Exception {
         double areaFrom = 50.0;
         double areaTo = 120.0;
 
@@ -104,7 +104,7 @@ class ShapeControllerTest {
     }
 
     @Test
-    void getShapeByPerimeterBetweenMinAndMax() throws Exception {
+    void shouldGetShapeByPerimeterBetweenMinAndMaxAndReturnStatusOK() throws Exception {
         double perimeterFrom = 30.0;
         double perimeterTo = 90.0;
 
@@ -123,7 +123,7 @@ class ShapeControllerTest {
 
 
     @Test
-    void findAllByCreatedAtBetween() throws Exception {
+    void shouldFindAllByCreatedAtBetweenAndReturnStatusOK() throws Exception {
         LocalDate createdFrom = LocalDate.parse("2023-07-01");
         LocalDate createdTo = LocalDate.parse("2023-07-01");
 
@@ -140,7 +140,7 @@ class ShapeControllerTest {
 
 
     @Test
-    void findAllByCreatedBy() throws Exception {
+    void shouldFindAllByCreatedByAndReturnStatusOK() throws Exception {
         String createdBy = "roko";
 
         mockMvc.perform(get("http://localhost:8080/api/v1/shapes/createdby")
@@ -154,7 +154,7 @@ class ShapeControllerTest {
     }
 
     @Test
-    void findAllCircleByRadiusBetween() throws Exception {
+    void shouldFindAllCircleByRadiusBetweenAndReturnStatusOK() throws Exception {
         double radiusFrom = 5.0;
         double radiusTo = 10.0;
 
@@ -170,7 +170,7 @@ class ShapeControllerTest {
     }
 
     @Test
-    void findAllSquareByWidthBetween() throws Exception {
+    void shouldFindAllSquareByWidthBetweenAndReturnStatusOK() throws Exception {
         double widthFrom = 5.0;
         double widthTo = 20.0;
 
@@ -190,7 +190,7 @@ class ShapeControllerTest {
     }
 
     @Test
-    void findAllRectangleByWidthBetweenAndAndLengthBetween() throws Exception {
+    void shouldFindAllRectangleByWidthBetweenAndAndLengthBetweenAndReturnStatusOK() throws Exception {
         double widthFrom = 5.0;
         double widthTo = 20.0;
         double lengthFrom = 10.0;
