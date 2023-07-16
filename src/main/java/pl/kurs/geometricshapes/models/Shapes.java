@@ -27,10 +27,14 @@ public abstract class Shapes implements Serializable, Identificationable {
 
     private String lastModifiedBy;
 
+    private double area;
+
+    private double perimeter;
+
     public Shapes() {
     }
 
-    public Shapes(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy) {
+    public Shapes(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double area, double perimeter) {
         this.parameters = parameters;
         this.type = type;
         this.version = version;
@@ -38,6 +42,8 @@ public abstract class Shapes implements Serializable, Identificationable {
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
         this.lastModifiedBy = lastModifiedBy;
+        this.area = area;
+        this.perimeter = perimeter;
     }
 
     public double[] getParameters() {
@@ -96,17 +102,33 @@ public abstract class Shapes implements Serializable, Identificationable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    public double getArea() {
+        return area;
+    }
+
+    public void setArea(double area) {
+        this.area = area;
+    }
+
+    public double getPerimeter() {
+        return perimeter;
+    }
+
+    public void setPerimeter(double perimeter) {
+        this.perimeter = perimeter;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Shapes shapes = (Shapes) o;
-        return Arrays.equals(parameters, shapes.parameters) && Objects.equals(type, shapes.type) && Objects.equals(version, shapes.version) && Objects.equals(createdBy, shapes.createdBy) && Objects.equals(createdAt, shapes.createdAt) && Objects.equals(lastModifiedAt, shapes.lastModifiedAt) && Objects.equals(lastModifiedBy, shapes.lastModifiedBy);
+        return Double.compare(shapes.area, area) == 0 && Double.compare(shapes.perimeter, perimeter) == 0 && Arrays.equals(parameters, shapes.parameters) && Objects.equals(type, shapes.type) && Objects.equals(version, shapes.version) && Objects.equals(createdBy, shapes.createdBy) && Objects.equals(createdAt, shapes.createdAt) && Objects.equals(lastModifiedAt, shapes.lastModifiedAt) && Objects.equals(lastModifiedBy, shapes.lastModifiedBy);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+        int result = Objects.hash(type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy, area, perimeter);
         result = 31 * result + Arrays.hashCode(parameters);
         return result;
     }
@@ -121,6 +143,8 @@ public abstract class Shapes implements Serializable, Identificationable {
                 ", createdAt=" + createdAt +
                 ", lastModifiedAt=" + lastModifiedAt +
                 ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                ", area=" + area +
+                ", perimeter=" + perimeter +
                 '}';
     }
 }

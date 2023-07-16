@@ -15,7 +15,6 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SquareStrategy implements ShapeStrategy {
@@ -35,13 +34,12 @@ public class SquareStrategy implements ShapeStrategy {
 
     @Override
     public Shapes updateShape(UpdateShapeCommand updateShapeCommand) {
-        Optional<Square> squareForUpdateOptional = Optional.ofNullable(squareManagementService.get(updateShapeCommand.getId()));
-        Square squareForUpdate = squareForUpdateOptional.get();
+        Square squareForUpdate = squareManagementService.get(updateShapeCommand.getId());
         modelMapper.map(updateShapeCommand, squareForUpdate);
         squareManagementService.edit(squareForUpdate);
         return squareForUpdate;
-
     }
+
 
 
     @Override

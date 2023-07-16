@@ -65,7 +65,7 @@ public class ShapeController {
         return ResponseEntity.status(HttpStatus.OK).body(shapeDto);
     }
 
-    
+
     @GetMapping(value = "/{type}")
     public ResponseEntity<List<ShapesDto>> getShapesByType(@PathVariable("type") String type) {
         String shapeType = type.toLowerCase(Locale.ROOT);
@@ -92,7 +92,7 @@ public class ShapeController {
     }
 
 
-    @GetMapping(value = "/perimeter-range")
+    @GetMapping(value = "/perimeter-range") //http://localhost:8080/api/v1/shapes/perimeter-range?perimeterfrom=0.0&perimeterto=100.0
     public ResponseEntity<List<ShapesDto>> getShapeByPerimeterBetweenMinAndMax(@RequestParam("perimeterfrom") double perimeterFrom, @RequestParam("perimeterto") double perimeterTo) {
         List<ShapesDto> shapesDtoList = new ArrayList<>();
         for (ShapeStrategy strategy : shapeStrategies.values()) {
@@ -163,4 +163,3 @@ public class ShapeController {
         return ResponseEntity.status(HttpStatus.OK).body(rectangleDtoList);
     }
 }
-

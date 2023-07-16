@@ -1,5 +1,7 @@
 package pl.kurs.geometricshapes.strategy;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -36,13 +37,11 @@ public class CircleStrategy implements ShapeStrategy {
 
     @Override
     public Shapes updateShape(UpdateShapeCommand updateShapeCommand) {
-        Optional<Circle> circleForUpdateOptional = Optional.ofNullable(circleManagementService.get(updateShapeCommand.getId()));
-        Circle circleForUpdate = circleForUpdateOptional.get();
+        Circle circleForUpdate = circleManagementService.get(updateShapeCommand.getId());
         modelMapper.map(updateShapeCommand, circleForUpdate);
         circleManagementService.edit(circleForUpdate);
         return circleForUpdate;
     }
-
     @Override
     public Shapes findById(Long id) {
         return circleManagementService.get(id);

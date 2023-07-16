@@ -1,12 +1,16 @@
 package pl.kurs.geometricshapes.repository;
 
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.kurs.geometricshapes.models.Rectangle;
 
 import java.time.LocalDate;
+
 import java.util.List;
 
+
 public interface RectangleRepository extends JpaRepository<Rectangle, Long> {
+
 
     List<Rectangle> findAllByAreaBetween(double areaFrom, double areaTo);
 
