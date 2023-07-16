@@ -15,8 +15,6 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 @Service
 public class RectangleStrategy implements ShapeStrategy {
 
@@ -35,8 +33,7 @@ public class RectangleStrategy implements ShapeStrategy {
 
     @Override
     public Shapes updateShape(UpdateShapeCommand updateShapeCommand) {
-        Optional<Rectangle> rectangleForUpdateOptional = Optional.ofNullable(rectangleManagementService.get(updateShapeCommand.getId()));
-        Rectangle rectangleForUpdate = rectangleForUpdateOptional.get();
+        Rectangle rectangleForUpdate = rectangleManagementService.get(updateShapeCommand.getId());
         modelMapper.map(updateShapeCommand, rectangleForUpdate);
         rectangleManagementService.edit(rectangleForUpdate);
         return rectangleForUpdate;

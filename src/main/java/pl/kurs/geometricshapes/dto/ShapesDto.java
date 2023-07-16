@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public abstract class ShapesDto {
 
+    private Long id;
     private String type;
     private String version;
     private String createdBy;
@@ -13,6 +14,13 @@ public abstract class ShapesDto {
     private double area;
     private double perimeter;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getType() {
         return type;

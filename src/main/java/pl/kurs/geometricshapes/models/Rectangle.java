@@ -16,14 +16,13 @@ public class Rectangle extends Shapes {
 
     private double length;
     private double width;
-    private double area;
-    private double perimeter;
+
 
     public Rectangle() {
     }
 
-    public Rectangle(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double length, double width) {
-        super(parameters, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Rectangle(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double area, double perimeter, double length, double width) {
+        super(parameters, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy, area, perimeter);
         this.length = length;
         this.width = width;
     }
@@ -31,11 +30,10 @@ public class Rectangle extends Shapes {
     @Override
     public void setParameters(double[] parameters) {
         super.setParameters(parameters);
-        if(parameters != null && parameters.length > 0) {
+        if (parameters != null && parameters.length > 0) {
             this.width = parameters[0];
             this.length = parameters[1];
         }
-        updateAreaAndPerimeter();
     }
 
     @Override
@@ -63,17 +61,9 @@ public class Rectangle extends Shapes {
         this.width = width;
     }
 
-    public double getArea() {
-        return this.area;
-    }
-
-    public double getPerimeter() {
-        return this.perimeter;
-    }
-
     private void updateAreaAndPerimeter() {
-        this.area = length * width;
-        this.perimeter = 2 * (length + width);
+        setArea(length * width);
+        setPerimeter(2 * length + 2 * width);
     }
 
     @Override
@@ -82,12 +72,12 @@ public class Rectangle extends Shapes {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Rectangle rectangle = (Rectangle) o;
-        return Double.compare(rectangle.length, length) == 0 && Double.compare(rectangle.width, width) == 0 && Double.compare(rectangle.area, area) == 0 && Double.compare(rectangle.perimeter, perimeter) == 0 && Objects.equals(id, rectangle.id);
+        return Double.compare(rectangle.length, length) == 0 && Double.compare(rectangle.width, width) == 0 && Objects.equals(id, rectangle.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, length, width, area, perimeter);
+        return Objects.hash(super.hashCode(), id, length, width);
     }
 
     @Override
@@ -96,8 +86,6 @@ public class Rectangle extends Shapes {
                 "id=" + id +
                 ", length=" + length +
                 ", width=" + width +
-                ", area=" + area +
-                ", perimeter=" + perimeter +
                 "} " + super.toString();
     }
 }

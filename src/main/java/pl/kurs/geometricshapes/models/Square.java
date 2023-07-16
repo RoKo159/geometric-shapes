@@ -15,14 +15,13 @@ public class Square extends Shapes {
     private Long id;
 
     private double width;
-    private double area;
-    private double perimeter;
+
 
     public Square() {
     }
 
-    public Square(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double width) {
-        super(parameters, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy);
+    public Square(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double area, double perimeter, double width) {
+        super(parameters, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy, area, perimeter);
         this.width = width;
     }
 
@@ -52,17 +51,10 @@ public class Square extends Shapes {
         this.width = width;
     }
 
-    public double getArea() {
-        return this.area;
-    }
-
-    public double getPerimeter() {
-        return this.perimeter;
-    }
 
     private void updateAreaAndPerimeter() {
-        this.area = width * width;
-        this.perimeter = 4 * width;
+        setArea(width * width);
+        setPerimeter(4 * width);
     }
 
     @Override
@@ -71,21 +63,19 @@ public class Square extends Shapes {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Square square = (Square) o;
-        return Double.compare(square.width, width) == 0 && Double.compare(square.area, area) == 0 && Double.compare(square.perimeter, perimeter) == 0 && Objects.equals(id, square.id);
+        return Double.compare(square.width, width) == 0 && Objects.equals(id, square.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, width, area, perimeter);
+        return Objects.hash(super.hashCode(), id, width);
     }
 
     @Override
     public String toString() {
-        return super.toString() +
-                ", id=" + id +
+        return "Square{" +
+                "id=" + id +
                 ", width=" + width +
-                ", area=" + area +
-                ", perimeter=" + perimeter +
-                "} ";
+                "} " + super.toString();
     }
 }

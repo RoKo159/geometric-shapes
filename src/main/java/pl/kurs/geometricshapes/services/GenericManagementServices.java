@@ -1,7 +1,10 @@
 package pl.kurs.geometricshapes.services;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.kurs.geometricshapes.exceptions.WrongEntityException;
+import pl.kurs.geometricshapes.models.Circle;
 
 
 import javax.persistence.EntityNotFoundException;
