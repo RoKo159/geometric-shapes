@@ -2,23 +2,11 @@ package pl.kurs.geometricshapes.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import pl.kurs.geometricshapes.models.Rectangle;
+import pl.kurs.geometricshapes.repository.repositorycustom.RectangleRepositoryCustom;
 
-import java.time.LocalDate;
+@Repository
+public interface RectangleRepository extends JpaRepository<Rectangle, Long>, RectangleRepositoryCustom {
 
-import java.util.List;
-
-
-public interface RectangleRepository extends JpaRepository<Rectangle, Long> {
-
-
-    List<Rectangle> findAllByAreaBetween(double areaFrom, double areaTo);
-
-    List<Rectangle> findAllByPerimeterBetween(double perimeterFrom, double perimeterTo);
-
-    List<Rectangle> findAllByCreatedAtBetween(LocalDate dateFrom, LocalDate dateTo);
-
-    List<Rectangle> findAllByCreatedBy(String createdBy);
-
-    List<Rectangle> findAllByWidthBetweenAndLengthBetween(double widthFrom, double widthTo, double lengthFrom, double lengthTo);
 }

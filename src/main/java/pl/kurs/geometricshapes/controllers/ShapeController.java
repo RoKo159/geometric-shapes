@@ -10,18 +10,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.commands.UpdateShapeCommand;
-import pl.kurs.geometricshapes.dto.CircleDto;
-import pl.kurs.geometricshapes.dto.RectangleDto;
 import pl.kurs.geometricshapes.dto.ShapesDto;
-import pl.kurs.geometricshapes.dto.SquareDto;
-import pl.kurs.geometricshapes.models.Circle;
-import pl.kurs.geometricshapes.models.Rectangle;
 import pl.kurs.geometricshapes.models.Shapes;
-import pl.kurs.geometricshapes.models.Square;
-import pl.kurs.geometricshapes.strategy.CircleStrategy;
-import pl.kurs.geometricshapes.strategy.RectangleStrategy;
 import pl.kurs.geometricshapes.strategy.ShapeStrategy;
-import pl.kurs.geometricshapes.strategy.SquareStrategy;
 
 
 import javax.validation.Valid;
@@ -78,11 +69,11 @@ public class ShapeController {
     }
 
 
-    @GetMapping(value = "/area-range")
-    public ResponseEntity<List<ShapesDto>> getShapeByAreaBetweenMinAndMax(@RequestParam("areafrom") double areaFrom, @RequestParam("areato") double areaTo) {
+    @GetMapping(value = "/parameters")
+    public ResponseEntity<List<ShapesDto>> getShapeByAreaBetweenMinAndMax(@RequestParam Map<String,String> allParams) {
         List<ShapesDto> shapesDtoList = new ArrayList<>();
         for (ShapeStrategy strategy : shapeStrategies.values()) {
-            List<Shapes> shapes = strategy.findAllByAreaBetween(areaFrom, areaTo);
+            List<Shapes> shapes = strategy.getShapesByFilteredParameters(allParams);
             List<ShapesDto> shapesDtos = shapes.stream()
                     .map(shape -> modelMapper.map(shape, strategy.getShapeDtoClass()))
                     .collect(Collectors.toList());
@@ -92,74 +83,36 @@ public class ShapeController {
     }
 
 
-    @GetMapping(value = "/perimeter-range") //http://localhost:8080/api/v1/shapes/perimeter-range?perimeterfrom=0.0&perimeterto=100.0
-    public ResponseEntity<List<ShapesDto>> getShapeByPerimeterBetweenMinAndMax(@RequestParam("perimeterfrom") double perimeterFrom, @RequestParam("perimeterto") double perimeterTo) {
-        List<ShapesDto> shapesDtoList = new ArrayList<>();
-        for (ShapeStrategy strategy : shapeStrategies.values()) {
-            List<Shapes> shapes = strategy.findAllByPerimeterBetween(perimeterFrom, perimeterTo);
-            List<ShapesDto> shapesDtos = shapes.stream()
-                    .map(shape -> modelMapper.map(shape, strategy.getShapeDtoClass()))
-                    .collect(Collectors.toList());
-            shapesDtoList.addAll(shapesDtos);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(shapesDtoList);
-    }
+//    @GetMapping(value = "/parameters")
+//    public ResponseEntity<List<ShapesDto>> getShapeByAreaBetweenMinAndMax(
+//            @RequestParam(required = false, name = "type") String type,
+//            @RequestParam(required = false, name = "perimeterfrom") Double perimeterFrom,
+//            @RequestParam(required = false, name = "perimeterto") Double perimeterTo,
+//            @RequestParam(required = false, name = "areafrom") Double areaFrom,
+//            @RequestParam(required = false, name = "areato") Double areaTo,
+//            @RequestParam(required = false, name = "datefrom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+//            @RequestParam(required = false, name = "dateto") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+//            @RequestParam(required = false, name = "createdby") String createdBy,
+//            @RequestParam(required = false, name = "radiusfrom") Double radiusFrom,
+//            @RequestParam(required = false, name = "radiusto") Double radiusTo,
+//            @RequestParam(required = false, name = "widthfrom") Double widthFrom,
+//            @RequestParam(required = false, name = "widthto") Double widthTo,
+//            @RequestParam(required = false, name = "lengthfrom") Double lengthFrom,
+//            @RequestParam(required = false, name = "lengthto") Double lengthTo
+//    ) {
+//        List<ShapesDto> shapesDtoList = new ArrayList<>();
+//        for (ShapeStrategy strategy : shapeStrategies.values()) {
+//            List<Shapes> shapes = strategy.getShapesByFilteredParameters(
+//                    type, createdBy, dateFrom, dateTo, areaFrom, areaTo,
+//                    perimeterFrom, perimeterTo, widthFrom, widthTo, lengthFrom,
+//                    lengthTo, radiusFrom, radiusTo
+//            );
+//            List<ShapesDto> shapesDtos = shapes.stream()
+//                    .map(shape -> modelMapper.map(shape, strategy.getShapeDtoClass()))
+//                    .collect(Collectors.toList());
+//            shapesDtoList.addAll(shapesDtos);
+//        }
+//        return ResponseEntity.status(HttpStatus.OK).body(shapesDtoList);
+//    }
 
-
-    @GetMapping(value = "/created-date-range")
-    public ResponseEntity<List<ShapesDto>> findAllByCreatedAtBetween(@RequestParam("createdfrom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdFrom, @RequestParam("createdto") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdTo) {
-        List<ShapesDto> shapesDtoList = new ArrayList<>();
-        for (ShapeStrategy strategy : shapeStrategies.values()) {
-            List<Shapes> shapes = strategy.findAllByCreatedAtBetween(createdFrom, createdTo);
-            List<ShapesDto> shapesDtos = shapes.stream()
-                    .map(shape -> modelMapper.map(shape, strategy.getShapeDtoClass()))
-                    .collect(Collectors.toList());
-            shapesDtoList.addAll(shapesDtos);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(shapesDtoList);
-    }
-
-    @GetMapping(value = "/createdby")
-    public ResponseEntity<List<ShapesDto>> findAllByCreatedBy(@RequestParam("createdby") String createdby) {
-        List<ShapesDto> shapesDtoList = new ArrayList<>();
-        for (ShapeStrategy strategy : shapeStrategies.values()) {
-            List<Shapes> shapes = strategy.findAllByCreatedBy(createdby);
-            List<ShapesDto> shapesDtos = shapes.stream()
-                    .map(shape -> modelMapper.map(shape, strategy.getShapeDtoClass()))
-                    .collect(Collectors.toList());
-            shapesDtoList.addAll(shapesDtos);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(shapesDtoList);
-    }
-
-    @GetMapping(value = "/circle-parameter-range")
-    public ResponseEntity<List<CircleDto>> findAllCircleByRadiusBetween(@RequestParam("radiusfrom") double radiusFrom, @RequestParam("radiusto") double radiusTo) {
-        CircleStrategy circleStrategy = (CircleStrategy) shapeStrategies.get("circle");
-        List<Circle> circles = circleStrategy.findAllByRadiusBetween(radiusFrom, radiusTo);
-        List<CircleDto> circleDtoList = circles.stream()
-                .map(circle -> modelMapper.map(circle, CircleDto.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(circleDtoList);
-    }
-
-
-    @GetMapping(value = "/square-parameter-range")
-    public ResponseEntity<List<SquareDto>> findAllSquareByWidthBetween(@RequestParam("widthfrom") double widthFrom, @RequestParam("widthto") double widthTo) {
-        SquareStrategy squareStrategy = (SquareStrategy) shapeStrategies.get("square");
-        List<Square> squares = squareStrategy.findAllByWidthBetween(widthFrom, widthTo);
-        List<SquareDto> squareDtoList = squares.stream()
-                .map(square -> modelMapper.map(square, SquareDto.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(squareDtoList);
-    }
-
-    @GetMapping(value = "/rectangle-parameter-range")
-    public ResponseEntity<List<RectangleDto>> findAllRectangleByWidthBetween(@RequestParam("widthfrom") double widthFrom, @RequestParam("widthto") double widthTo, @RequestParam("lengthfrom") double lengthFrom, @RequestParam("lengthto") double lengthTo) {
-        RectangleStrategy rectangleStrategy = (RectangleStrategy) shapeStrategies.get("rectangle");
-        List<Rectangle> rectangles = rectangleStrategy.findAllByWidthBetweenAndLengthBetween(widthFrom, widthTo, lengthFrom, lengthTo);
-        List<RectangleDto> rectangleDtoList = rectangles.stream()
-                .map(rectangle -> modelMapper.map(rectangle, RectangleDto.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(rectangleDtoList);
-    }
 }

@@ -7,16 +7,28 @@ import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.commands.UpdateShapeCommand;
 import pl.kurs.geometricshapes.dto.RectangleDto;
 import pl.kurs.geometricshapes.dto.ShapesDto;
+import pl.kurs.geometricshapes.models.Circle;
 import pl.kurs.geometricshapes.models.Rectangle;
 import pl.kurs.geometricshapes.models.Shapes;
 import pl.kurs.geometricshapes.services.RectangleManagementServices;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class RectangleStrategy implements ShapeStrategy {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -56,36 +68,68 @@ public class RectangleStrategy implements ShapeStrategy {
     }
 
     @Override
-    public List<Shapes> findAllByPerimeterBetween(double perimeterFrom, double perimeterTo) {
-        return new ArrayList<>(rectangleManagementService.findAllByPerimeterBetween(perimeterFrom, perimeterTo));
-    }
-
-    @Override
-    public List<Shapes> findAllByAreaBetween(double areaFrom, double areaTo) {
-        return new ArrayList<>(rectangleManagementService.findAllByAreaBetween(areaFrom, areaTo));
-    }
-
-    @Override
     public List<Shapes> getAll() {
         return new ArrayList<>(rectangleManagementService.getAll());
     }
 
-    @Override
-    public List<Shapes> findAllByCreatedAtBetween(LocalDate createdFrom, LocalDate createdTo) {
-        return new ArrayList<>(rectangleManagementService.findAllByCreatedAtBetween(createdFrom, createdTo));
-    }
+//    @Override
+//    public List<Shapes> getShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo) {
+//        return new ArrayList<>(rectangleManagementService.findAllShapesByFilteredParameters(type, createdBy, dateFrom, dateTo, areaFrom, areaTo, perimeterFrom, perimeterTo, widthFrom, widthTo, lengthFrom, lengthTo, widthFrom, widthTo));
+//    }
 
     @Override
-    public List<Shapes> findAllByCreatedBy(String createdby) {
-        return new ArrayList<>(rectangleManagementService.findAllByCreatedBy(createdby));
+    public List<Shapes> getShapesByFilteredParameters(Map<String, String> allParams) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Rectangle> cq = cb.createQuery(Rectangle.class);
+
+        Root<Rectangle> rectangle = cq.from(Rectangle.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        String type = allParams.get("type");
+        String createdBy = allParams.get("createdby");
+        LocalDate dateFrom = allParams.get("datefrom") != null ? LocalDate.parse(allParams.get("datefrom")) : null;
+        LocalDate dateTo = allParams.get("dateto") != null ? LocalDate.parse(allParams.get("dateto")) : null;
+        Double areaFrom = allParams.get("areafrom") != null ? Double.parseDouble(allParams.get("areafrom")) : null;
+        Double areaTo = allParams.get("areato") != null ? Double.parseDouble(allParams.get("areato")) : null;
+        Double perimeterFrom = allParams.get("perimeterfrom") != null ? Double.parseDouble(allParams.get("perimeterfrom")) : null;
+        Double perimeterTo = allParams.get("perimeterto") != null ? Double.parseDouble(allParams.get("perimeterto")) : null;
+        Double widthFrom = allParams.get("widthfrom") != null ? Double.parseDouble(allParams.get("widthfrom")) : null;
+        Double widthTo = allParams.get("widthto") != null ? Double.parseDouble(allParams.get("widthto")) : null;
+        Double lengthFrom = allParams.get("lengthFrom") != null ? Double.parseDouble(allParams.get("lengthFrom")) : null;
+        Double lengthTo = allParams.get("lengthto") != null ? Double.parseDouble(allParams.get("lengthto")) : null;
+
+        if (type != null) {
+            predicates.add(cb.equal(rectangle.get("type"), type));
+        }
+        if (createdBy != null) {
+            predicates.add(cb.equal(rectangle.get("createdBy"), createdBy));
+        }
+        if (dateFrom != null && dateTo != null) {
+            predicates.add(cb.between(rectangle.get("createdAt"), dateFrom, dateTo));
+        }
+        if (areaFrom != null && areaTo != null) {
+            predicates.add(cb.between(rectangle.get("area"), areaFrom, areaTo));
+        }
+        if (perimeterFrom != null && perimeterTo != null) {
+            predicates.add(cb.between(rectangle.get("perimeter"), perimeterFrom, perimeterTo));
+        }
+        if (widthFrom != null && widthTo != null) {
+            predicates.add(cb.between(rectangle.get("width"), widthFrom, widthTo));
+        }
+        if (lengthFrom != null && lengthTo != null) {
+            predicates.add(cb.between(rectangle.get("length"), lengthFrom, lengthTo));
+        }
+
+        cq.where(predicates.toArray(new Predicate[0]));
+
+        return new ArrayList<>(entityManager.createQuery(cq).getResultList());
     }
+
 
     @Override
     public String getShapeType() {
         return "rectangle";
     }
 
-    public List<Rectangle> findAllByWidthBetweenAndLengthBetween(double widthFrom, double widthTo, double lengthFrom, double lengthTo) {
-        return rectangleManagementService.findAllByWidthBetweenAndLengthBetween(widthFrom, widthTo, lengthFrom, lengthTo);
-    }
 }

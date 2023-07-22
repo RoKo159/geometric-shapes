@@ -1,14 +1,13 @@
 package pl.kurs.geometricshapes.services;
 
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.kurs.geometricshapes.exceptions.WrongEntityException;
-import pl.kurs.geometricshapes.models.Circle;
+import pl.kurs.geometricshapes.models.Shapes;
 
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -59,12 +58,5 @@ public abstract class GenericManagementServices<T extends Identificationable, R 
         return repository.findAll();
     }
 
-    public abstract List<T> findAllByAreaBetween(double areaFrom, double areaTo);
-
-    public abstract List<T> findAllByPerimeterBetween(double perimeterFrom, double perimeterTo);
-
-    public abstract List<T> findAllByCreatedAtBetween(LocalDate dateFrom, LocalDate dateTo);
-
-    public abstract List<T> findAllByCreatedBy(String createdBy);
-
+    public abstract Collection<? extends Shapes> findAllShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo);
 }
