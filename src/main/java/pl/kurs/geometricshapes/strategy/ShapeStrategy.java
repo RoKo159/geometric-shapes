@@ -8,6 +8,7 @@ import pl.kurs.geometricshapes.models.Shapes;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface ShapeStrategy {
 
@@ -21,17 +22,10 @@ public interface ShapeStrategy {
 
     Class<? extends ShapesDto> getShapeDtoClass();
 
-    List<Shapes> findAllByPerimeterBetween(double perimeterFrom, double perimeterTo);
-
-    List<Shapes> findAllByAreaBetween(double areaFrom, double areaTo);
-
     List<Shapes> getAll();
 
-    List<Shapes> findAllByCreatedAtBetween(LocalDate createdFrom, LocalDate createdTo);
-
-    List<Shapes> findAllByCreatedBy(String createdby);
+    //List<Shapes> getShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo);
+    List<Shapes> getShapesByFilteredParameters(Map<String,String> allParams);
 
     String getShapeType();
-
-
 }

@@ -13,14 +13,24 @@ import pl.kurs.geometricshapes.models.Circle;
 import pl.kurs.geometricshapes.models.Shapes;
 import pl.kurs.geometricshapes.services.CircleManagementServices;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 public class CircleStrategy implements ShapeStrategy {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -59,36 +69,63 @@ public class CircleStrategy implements ShapeStrategy {
     }
 
     @Override
-    public List<Shapes> findAllByPerimeterBetween(double perimeterFrom, double perimeterTo) {
-        return new ArrayList<>(circleManagementService.findAllByPerimeterBetween(perimeterFrom, perimeterTo));
-    }
-
-    @Override
-    public List<Shapes> findAllByAreaBetween(double areaFrom, double areaTo) {
-        return new ArrayList<>(circleManagementService.findAllByAreaBetween(areaFrom, areaTo));
-    }
-
-    @Override
     public List<Shapes> getAll() {
         return new ArrayList<>(circleManagementService.getAll());
     }
 
-    @Override
-    public List<Shapes> findAllByCreatedAtBetween(LocalDate createdFrom, LocalDate createdTo) {
-        return new ArrayList<>(circleManagementService.findAllByCreatedAtBetween(createdFrom, createdTo));
-    }
+//    @Override
+//    public List<Shapes> getShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo) {
+//        return new ArrayList<>(circleManagementService.findAllShapesByFilteredParameters(type, createdBy, dateFrom, dateTo, areaFrom, areaTo, perimeterFrom, perimeterTo, widthFrom, widthTo, lengthFrom, lengthTo, radiusFrom, radiusTo));
+//    }
 
     @Override
-    public List<Shapes> findAllByCreatedBy(String createdby) {
-        return new ArrayList<>(circleManagementService.findAllByCreatedBy(createdby));
+    public List<Shapes> getShapesByFilteredParameters(Map<String, String> allParams) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Circle> cq = cb.createQuery(Circle.class);
+
+        Root<Circle> circle = cq.from(Circle.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        String type = allParams.get("type");
+        String createdBy = allParams.get("createdby");
+        LocalDate dateFrom = allParams.get("datefrom") != null ? LocalDate.parse(allParams.get("datefrom")) : null;
+        LocalDate dateTo = allParams.get("dateto") != null ? LocalDate.parse(allParams.get("dateto")) : null;
+        Double areaFrom = allParams.get("areafrom") != null ? Double.parseDouble(allParams.get("areafrom")) : null;
+        Double areaTo = allParams.get("areato") != null ? Double.parseDouble(allParams.get("areato")) : null;
+        Double perimeterFrom = allParams.get("perimeterfrom") != null ? Double.parseDouble(allParams.get("perimeterfrom")) : null;
+        Double perimeterTo = allParams.get("perimeterto") != null ? Double.parseDouble(allParams.get("perimeterto")) : null;
+        Double radiusFrom = allParams.get("radiusfrom") != null ? Double.parseDouble(allParams.get("radiusfrom")) : null;
+        Double radiusTo = allParams.get("radiusto") != null ? Double.parseDouble(allParams.get("radiusto")) : null;
+
+        if (type != null) {
+            predicates.add(cb.equal(circle.get("type"), type));
+        }
+        if (createdBy != null) {
+            predicates.add(cb.equal(circle.get("createdBy"), createdBy));
+        }
+        if (dateFrom != null && dateTo != null) {
+            predicates.add(cb.between(circle.get("createdAt"), dateFrom, dateTo));
+        }
+        if (areaFrom != null && areaTo != null) {
+            predicates.add(cb.between(circle.get("area"), areaFrom, areaTo));
+        }
+        if (perimeterFrom != null && perimeterTo != null) {
+            predicates.add(cb.between(circle.get("perimeter"), perimeterFrom, perimeterTo));
+        }
+        if (radiusFrom != null && radiusTo != null) {
+            predicates.add(cb.between(circle.get("radius"), radiusFrom, radiusTo));
+        }
+
+        cq.where(predicates.toArray(new Predicate[0]));
+
+        return new ArrayList<>(entityManager.createQuery(cq).getResultList());
     }
+
 
     @Override
     public String getShapeType() {
         return "circle";
     }
 
-    public List<Circle> findAllByRadiusBetween(double radiusFrom, double radiusTo) {
-        return circleManagementService.findAllByRadiusBetween(radiusFrom, radiusTo);
-    }
 }

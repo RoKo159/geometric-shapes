@@ -1,39 +1,25 @@
 package pl.kurs.geometricshapes.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.kurs.geometricshapes.models.Rectangle;
+import pl.kurs.geometricshapes.models.Shapes;
 import pl.kurs.geometricshapes.models.Square;
 import pl.kurs.geometricshapes.repository.SquareRepository;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collection;
 
 @Service
 public class SquareManagementServices extends GenericManagementServices<Square, SquareRepository> {
 
+    @Autowired
     public SquareManagementServices(SquareRepository repository) {
         super(repository);
     }
 
     @Override
-    public List<Square> findAllByAreaBetween(double areaFrom, double areaTo) {
-        return repository.findAllByAreaBetween(areaFrom, areaTo);
-    }
-    @Override
-    public List<Square> findAllByPerimeterBetween(double perimeterFrom, double perimeterTo) {
-        return repository.findAllByPerimeterBetween(perimeterFrom, perimeterTo);
-    }
-    @Override
-    public List<Square> findAllByCreatedAtBetween(LocalDate dateFrom, LocalDate dateTo) {
-        return repository.findAllByCreatedAtBetween(dateFrom, dateTo);
-    }
-    @Override
-    public List<Square> findAllByCreatedBy(String createdBy) {
-        return repository.findAllByCreatedBy(createdBy);
-    }
-
-    public List<Square> findAllByWidthBetween(double widthFrom, double widthTo) {
-        return repository.findAllByWidthBetween(widthFrom, widthTo);
+    public Collection<? extends Shapes> findAllShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo) {
+        return repository.findAllShapesByFilteredParameters(type, createdBy, dateFrom, dateTo, areaFrom, areaTo, perimeterFrom, perimeterTo, widthFrom, widthTo);
     }
 
 }
