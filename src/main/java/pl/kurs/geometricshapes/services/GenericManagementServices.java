@@ -20,7 +20,6 @@ public abstract class GenericManagementServices<T extends Identificationable, R 
         this.repository = repository;
     }
 
-
     @Override
     public T add(T entity) {
         return repository.save(

@@ -10,6 +10,5 @@ class GeometricShapesApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
 

@@ -1,7 +1,5 @@
 package pl.kurs.geometricshapes.strategy;
 
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 @Service
 public class CircleStrategy implements ShapeStrategy {
@@ -52,6 +49,7 @@ public class CircleStrategy implements ShapeStrategy {
         circleManagementService.edit(circleForUpdate);
         return circleForUpdate;
     }
+
     @Override
     public Shapes findById(Long id) {
         return circleManagementService.get(id);
@@ -72,11 +70,6 @@ public class CircleStrategy implements ShapeStrategy {
     public List<Shapes> getAll() {
         return new ArrayList<>(circleManagementService.getAll());
     }
-
-//    @Override
-//    public List<Shapes> getShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo) {
-//        return new ArrayList<>(circleManagementService.findAllShapesByFilteredParameters(type, createdBy, dateFrom, dateTo, areaFrom, areaTo, perimeterFrom, perimeterTo, widthFrom, widthTo, lengthFrom, lengthTo, radiusFrom, radiusTo));
-//    }
 
     @Override
     public List<Shapes> getShapesByFilteredParameters(Map<String, String> allParams) {

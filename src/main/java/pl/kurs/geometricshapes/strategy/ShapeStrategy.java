@@ -24,7 +24,6 @@ public interface ShapeStrategy {
 
     List<Shapes> getAll();
 
-    //List<Shapes> getShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo);
     List<Shapes> getShapesByFilteredParameters(Map<String,String> allParams);
 
     String getShapeType();

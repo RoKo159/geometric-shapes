@@ -7,6 +7,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "square")
 public class Square extends Shapes {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -15,7 +16,6 @@ public class Square extends Shapes {
     private Long id;
 
     private double width;
-
 
     public Square() {
     }
@@ -50,7 +50,6 @@ public class Square extends Shapes {
     public void setWidth(double width) {
         this.width = width;
     }
-
 
     private void updateAreaAndPerimeter() {
         setArea(width * width);

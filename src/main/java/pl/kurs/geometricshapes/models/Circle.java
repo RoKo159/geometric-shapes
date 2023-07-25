@@ -7,8 +7,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "circle")
 public class Circle extends Shapes {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,6 @@ public class Circle extends Shapes {
 
     public Circle() {
     }
-
 
     public Circle(double[] parameters, String type, String version, String createdBy, LocalDate createdAt, LocalDate lastModifiedAt, String lastModifiedBy, double area, double perimeter, double radius) {
         super(parameters, type, version, createdBy, createdAt, lastModifiedAt, lastModifiedBy, area, perimeter);
@@ -50,7 +49,6 @@ public class Circle extends Shapes {
     public void setRadius(double radius) {
         this.radius = radius;
     }
-
 
     private void updateAreaAndPerimeter() {
         setArea(Math.PI * radius * radius);

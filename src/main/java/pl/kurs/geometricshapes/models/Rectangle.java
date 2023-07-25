@@ -7,6 +7,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "rectangle")
 public class Rectangle extends Shapes {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -16,7 +17,6 @@ public class Rectangle extends Shapes {
 
     private double length;
     private double width;
-
 
     public Rectangle() {
     }
@@ -33,6 +33,7 @@ public class Rectangle extends Shapes {
         if (parameters != null && parameters.length > 0) {
             this.width = parameters[0];
             this.length = parameters[1];
+            updateAreaAndPerimeter();
         }
     }
 

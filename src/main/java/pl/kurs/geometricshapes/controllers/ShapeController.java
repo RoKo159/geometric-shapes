@@ -3,7 +3,6 @@ package pl.kurs.geometricshapes.controllers;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,9 +13,7 @@ import pl.kurs.geometricshapes.dto.ShapesDto;
 import pl.kurs.geometricshapes.models.Shapes;
 import pl.kurs.geometricshapes.strategy.ShapeStrategy;
 
-
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,10 +23,8 @@ import java.util.stream.Collectors;
 @Validated
 public class ShapeController {
 
-
     private ModelMapper modelMapper;
     private Map<String, ShapeStrategy> shapeStrategies;
-
 
     @Autowired
     public ShapeController(ModelMapper modelMapper, List<ShapeStrategy> shapeStrategies) {
@@ -56,21 +51,8 @@ public class ShapeController {
         return ResponseEntity.status(HttpStatus.OK).body(shapeDto);
     }
 
-
-    @GetMapping(value = "/{type}")
-    public ResponseEntity<List<ShapesDto>> getShapesByType(@PathVariable("type") String type) {
-        String shapeType = type.toLowerCase(Locale.ROOT);
-        ShapeStrategy shapeStrategy = shapeStrategies.get(shapeType);
-        List<Shapes> shapesList = shapeStrategy.getAll();
-        List<ShapesDto> shapesDtoList = shapesList.stream()
-                .map(shape -> modelMapper.map(shape, shapeStrategy.getShapeDtoClass()))
-                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(shapesDtoList);
-    }
-
-
     @GetMapping(value = "/parameters")
-    public ResponseEntity<List<ShapesDto>> getShapeByAreaBetweenMinAndMax(@RequestParam Map<String,String> allParams) {
+    public ResponseEntity<List<ShapesDto>> getShapesByFilteredParameters(@RequestParam Map<String,String> allParams) {
         List<ShapesDto> shapesDtoList = new ArrayList<>();
         for (ShapeStrategy strategy : shapeStrategies.values()) {
             List<Shapes> shapes = strategy.getShapesByFilteredParameters(allParams);
@@ -82,37 +64,9 @@ public class ShapeController {
         return ResponseEntity.status(HttpStatus.OK).body(shapesDtoList);
     }
 
-
-//    @GetMapping(value = "/parameters")
-//    public ResponseEntity<List<ShapesDto>> getShapeByAreaBetweenMinAndMax(
-//            @RequestParam(required = false, name = "type") String type,
-//            @RequestParam(required = false, name = "perimeterfrom") Double perimeterFrom,
-//            @RequestParam(required = false, name = "perimeterto") Double perimeterTo,
-//            @RequestParam(required = false, name = "areafrom") Double areaFrom,
-//            @RequestParam(required = false, name = "areato") Double areaTo,
-//            @RequestParam(required = false, name = "datefrom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
-//            @RequestParam(required = false, name = "dateto") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
-//            @RequestParam(required = false, name = "createdby") String createdBy,
-//            @RequestParam(required = false, name = "radiusfrom") Double radiusFrom,
-//            @RequestParam(required = false, name = "radiusto") Double radiusTo,
-//            @RequestParam(required = false, name = "widthfrom") Double widthFrom,
-//            @RequestParam(required = false, name = "widthto") Double widthTo,
-//            @RequestParam(required = false, name = "lengthfrom") Double lengthFrom,
-//            @RequestParam(required = false, name = "lengthto") Double lengthTo
-//    ) {
-//        List<ShapesDto> shapesDtoList = new ArrayList<>();
-//        for (ShapeStrategy strategy : shapeStrategies.values()) {
-//            List<Shapes> shapes = strategy.getShapesByFilteredParameters(
-//                    type, createdBy, dateFrom, dateTo, areaFrom, areaTo,
-//                    perimeterFrom, perimeterTo, widthFrom, widthTo, lengthFrom,
-//                    lengthTo, radiusFrom, radiusTo
-//            );
-//            List<ShapesDto> shapesDtos = shapes.stream()
-//                    .map(shape -> modelMapper.map(shape, strategy.getShapeDtoClass()))
-//                    .collect(Collectors.toList());
-//            shapesDtoList.addAll(shapesDtos);
-//        }
-//        return ResponseEntity.status(HttpStatus.OK).body(shapesDtoList);
-//    }
+    //todo napisać metodę kasującą, poprawić walidację, obsłużyć wyjątki kiedy nie znajdzie odpowiedniego kształtu,
+    // napiać do tego odpowienie testy, poprawić to żeby area i perimeter nie były w modelu, upewnić się że na 100% nie trzeba modyfikować kodu by dodać nowy kształt,
+    // obejrzec filmik o liquidbase i upewnić sie ze jest dobrze zrobione, sprawdzić nazewnictwo metod referencji itd,
+    // sprawdzić o co dokłanie chodzi z wersionowaniem, zrobić to Sql view, żeby była w bazie danych tabela widok, który ma id figury oraz jej pole i obwód wiliczane z jej cech
 
 }

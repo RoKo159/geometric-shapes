@@ -8,5 +8,4 @@ import java.util.List;
 public interface SquareRepositoryCustom {
 
     List<Square> findAllShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo);
-
 }
