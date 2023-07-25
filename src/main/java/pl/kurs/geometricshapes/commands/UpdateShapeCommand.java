@@ -2,6 +2,7 @@ package pl.kurs.geometricshapes.commands;
 
 import pl.kurs.geometricshapes.validators.SupportedShapeType;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -9,6 +10,7 @@ public class UpdateShapeCommand {
 
     @NotNull
     private Long id;
+    @NotBlank
     @SupportedShapeType
     private String type;
     @NotEmpty

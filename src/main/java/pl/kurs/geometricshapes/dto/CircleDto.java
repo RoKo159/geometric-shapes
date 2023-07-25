@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"id", "type", "radius", "version", "createdBy", "createdAt", "lastModifiedAt", "lastModifiedBy", "area", "perimeter"})
 public class CircleDto extends ShapesDto {
 
-
     private double radius;
 
     public double getRadius() {
@@ -15,5 +14,4 @@ public class CircleDto extends ShapesDto {
     public void setRadius(double radius) {
         this.radius = radius;
     }
-
 }

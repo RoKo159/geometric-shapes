@@ -7,7 +7,6 @@ import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.commands.UpdateShapeCommand;
 import pl.kurs.geometricshapes.dto.RectangleDto;
 import pl.kurs.geometricshapes.dto.ShapesDto;
-import pl.kurs.geometricshapes.models.Circle;
 import pl.kurs.geometricshapes.models.Rectangle;
 import pl.kurs.geometricshapes.models.Shapes;
 import pl.kurs.geometricshapes.services.RectangleManagementServices;
@@ -72,11 +71,6 @@ public class RectangleStrategy implements ShapeStrategy {
         return new ArrayList<>(rectangleManagementService.getAll());
     }
 
-//    @Override
-//    public List<Shapes> getShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo) {
-//        return new ArrayList<>(rectangleManagementService.findAllShapesByFilteredParameters(type, createdBy, dateFrom, dateTo, areaFrom, areaTo, perimeterFrom, perimeterTo, widthFrom, widthTo, lengthFrom, lengthTo, widthFrom, widthTo));
-//    }
-
     @Override
     public List<Shapes> getShapesByFilteredParameters(Map<String, String> allParams) {
 
@@ -125,7 +119,6 @@ public class RectangleStrategy implements ShapeStrategy {
 
         return new ArrayList<>(entityManager.createQuery(cq).getResultList());
     }
-
 
     @Override
     public String getShapeType() {

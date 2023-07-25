@@ -12,7 +12,6 @@ import java.util.Collection;
 @Service
 public class CircleManagementServices extends GenericManagementServices<Circle, CircleRepository> {
 
-
     @Autowired
     public CircleManagementServices(CircleRepository repository) {
         super(repository);

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.kurs.geometricshapes.exceptions.WrongEntityException;
 
-
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +27,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponseDto);
     }
 
-
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ExceptionResponseDto> handleValidationException(MethodArgumentNotValidException e) {
         List<String> errorsMessages = e.getFieldErrors().stream()
@@ -37,5 +35,4 @@ public class GlobalExceptionHandler {
         ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(errorsMessages, "BAD_REQUEST", LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponseDto);
     }
-
 }

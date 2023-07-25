@@ -7,9 +7,7 @@ import java.util.List;
 
 public class ShapeTypeValidator implements ConstraintValidator<SupportedShapeType, String> {
 
-
     private List<String> supportedShapeType;
-
 
     @Override
     public void initialize(SupportedShapeType constraintAnnotation) {
@@ -27,5 +25,4 @@ public class ShapeTypeValidator implements ConstraintValidator<SupportedShapeTyp
         }
         return true;
     }
-
 }

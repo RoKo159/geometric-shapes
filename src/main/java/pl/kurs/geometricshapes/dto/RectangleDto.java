@@ -8,7 +8,6 @@ public class RectangleDto extends ShapesDto {
     private double length;
     private double width;
 
-
     public double getLength() {
         return length;
     }
@@ -24,5 +23,4 @@ public class RectangleDto extends ShapesDto {
     public void setWidth(double width) {
         this.width = width;
     }
-
 }

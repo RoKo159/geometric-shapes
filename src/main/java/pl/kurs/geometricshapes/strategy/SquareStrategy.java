@@ -7,7 +7,6 @@ import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.commands.UpdateShapeCommand;
 import pl.kurs.geometricshapes.dto.ShapesDto;
 import pl.kurs.geometricshapes.dto.SquareDto;
-import pl.kurs.geometricshapes.models.Rectangle;
 import pl.kurs.geometricshapes.models.Shapes;
 import pl.kurs.geometricshapes.models.Square;
 import pl.kurs.geometricshapes.services.SquareManagementServices;
@@ -51,7 +50,6 @@ public class SquareStrategy implements ShapeStrategy {
         return squareForUpdate;
     }
 
-
     @Override
     public Shapes findById(Long id) {
         return null;
@@ -71,11 +69,6 @@ public class SquareStrategy implements ShapeStrategy {
     public List<Shapes> getAll() {
         return new ArrayList<>(squareManagementService.getAll());
     }
-
-//    @Override
-//    public List<Shapes> getShapesByFilteredParameters(String type, String createdBy, LocalDate dateFrom, LocalDate dateTo, Double areaFrom, Double areaTo, Double perimeterFrom, Double perimeterTo, Double widthFrom, Double widthTo, Double lengthFrom, Double lengthTo, Double radiusFrom, Double radiusTo) {
-//        return new ArrayList<>(squareManagementService.findAllShapesByFilteredParameters(type, createdBy, dateFrom, dateTo, areaFrom, areaTo, perimeterFrom, perimeterTo, widthFrom, widthTo, lengthFrom, lengthTo, widthFrom, widthTo));
-//    }
 
     @Override
     public List<Shapes> getShapesByFilteredParameters(Map<String, String> allParams) {
@@ -120,7 +113,6 @@ public class SquareStrategy implements ShapeStrategy {
 
         return new ArrayList<>(entityManager.createQuery(cq).getResultList());
     }
-
 
     @Override
     public String getShapeType() {

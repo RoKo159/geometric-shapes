@@ -5,7 +5,6 @@ import pl.kurs.geometricshapes.validators.SupportedShapeType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
-
 public class CreateShapeCommand {
 
     @NotBlank
@@ -13,7 +12,6 @@ public class CreateShapeCommand {
     private String type;
     @NotEmpty
     private double[] parameters;
-
 
     public String getType() {
         return type;
