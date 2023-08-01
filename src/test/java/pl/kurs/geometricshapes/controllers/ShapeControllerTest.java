@@ -2,163 +2,149 @@ package pl.kurs.geometricshapes.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import pl.kurs.geometricshapes.GeometricShapesApplication;
 import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.commands.UpdateShapeCommand;
-import pl.kurs.geometricshapes.dto.ShapesDto;
-import pl.kurs.geometricshapes.dto.SquareDto;
-import pl.kurs.geometricshapes.models.Square;
+import pl.kurs.geometricshapes.dto.ShapeDto;
+import pl.kurs.geometricshapes.exceptions.BadNumberOfParametersExceptions;
+import pl.kurs.geometricshapes.exceptions.NoShapeTypeException;
+import pl.kurs.geometricshapes.models.Shape;
+import pl.kurs.geometricshapes.repository.ShapeRepository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = GeometricShapesApplication.class)
+@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Transactional
-public class ShapeControllerTest {
-
+class ShapeControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ShapeRepository shapeRepository;
 
-    public void rollback() {
-        TestTransaction.end();
-    }
-
-    @AfterEach
-    public void cleanup() {
-        rollback();
-    }
-
-    @Test
-    public void shouldCreateShapeAndReturnStatusIsCreated() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shapes/square"))
-                .andExpect(status().isNotFound());
-
-        CreateShapeCommand square = new CreateShapeCommand();
-        square.setParameters(new double[]{5.0});
-        square.setType("SQUARE");
-
-        String json = objectMapper.writeValueAsString(square);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/shapes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isCreated());
-
-        String response = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shapes/parameters?type=SQUARE"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        List<Square> responseObj = objectMapper.readValue(response, new TypeReference<>() {
-        });
-        Assertions.assertFalse(responseObj.isEmpty());
-        Assertions.assertEquals("SQUARE", responseObj.get(0).getType());
-        Assertions.assertEquals(5.0, responseObj.get(0).getWidth());
+    @BeforeEach
+    void setUp() {
+        shapeRepository.deleteAll();
     }
 
     @Test
-    public void shouldUpdateShapeAndReturnStatusIsOk() throws Exception {
-        CreateShapeCommand square = new CreateShapeCommand();
-        square.setParameters(new double[]{5.0});
-        square.setType("SQUARE");
+    public void shouldAddShape() throws Exception {
+        CreateShapeCommand shapeCommand = new CreateShapeCommand();
+        shapeCommand.setType("SQUARE");
+        shapeCommand.setParameters(List.of(10.0));
 
-        String json = objectMapper.writeValueAsString(square);
-
-        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/shapes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
+        this.mockMvc.perform(post("/shapes")
+                .content(objectMapper.writeValueAsString(shapeCommand))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andReturn();
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.version").value(0))
+                .andExpect(jsonPath("$.type").value("SQUARE"));
 
-        String createResponse = createResult.getResponse().getContentAsString();
-        ShapesDto createdShapeDto = objectMapper.readValue(createResponse, SquareDto.class);
+        List<Shape> all = shapeRepository.findAll();
+        assertThat(all.get(0)).extracting("width").isEqualTo(10.0);
+    }
 
-        UpdateShapeCommand updateCommand = new UpdateShapeCommand();
-        updateCommand.setId(createdShapeDto.getId());
-        updateCommand.setType("SQUARE");
-        updateCommand.setParameters(new double[]{10.0});
+    @Test
+    public void shouldThrowExceptionWhenTypeIsNotSupported() throws Exception {
+        CreateShapeCommand shapeCommand = new CreateShapeCommand();
+        shapeCommand.setType("NEW_SHAPE");
+        shapeCommand.setParameters(List.of(5.0));
 
-        String updateJson = objectMapper.writeValueAsString(updateCommand);
+        this.mockMvc.perform(post("/shapes")
+                .content(objectMapper.writeValueAsString(shapeCommand))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("ShapeType: NEW_SHAPE is not supported"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoShapeTypeException));
+    }
 
-        MvcResult updateResult = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/shapes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(updateJson))
+    @Test
+    public void shouldThrowExceptionWhenBadNumberParameters() throws Exception {
+        CreateShapeCommand shapeCommand = new CreateShapeCommand();
+        shapeCommand.setParameters(List.of(5.0));
+        shapeCommand.setType("RECTANGLE");
+
+        this.mockMvc.perform(post("/shapes")
+                .content(objectMapper.writeValueAsString(shapeCommand))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("ShapeType: RECTANGLE should have 2 parameter(s)"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BadNumberOfParametersExceptions));
+    }
+
+
+    @Test
+    public void shouldGetOnlySquare() throws Exception {
+        addShape("RECTANGLE", List.of(3.0, 5.0));
+        addShape("CIRCLE", List.of(10.0));
+        addShape("SQUARE", List.of(15.0));
+        addShape("SQUARE", List.of(25.0));
+
+        MvcResult mvcResult = this.mockMvc.perform(get("/shapes?type=SQUARE"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String updateResponse = updateResult.getResponse().getContentAsString();
-        ShapesDto updatedShapeDto = objectMapper.readValue(updateResponse, SquareDto.class);
-
-        Assertions.assertEquals(createdShapeDto.getId(), updatedShapeDto.getId());
-        Assertions.assertEquals("SQUARE", updatedShapeDto.getType());
-        Assertions.assertEquals(100.0, updatedShapeDto.getArea(), 0.001);
+        List<ShapeDto> squareShapes = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<ShapeDto>>() {});
+        assertEquals(2, squareShapes.size());
     }
 
     @Test
-    public void shouldGetShapeByCustomParametersAndReturnStatusOk() throws Exception {
-        CreateShapeCommand square = new CreateShapeCommand();
-        square.setParameters(new double[]{5.0});
-        square.setType("SQUARE");
+    public void shouldUpdateShape() throws Exception {
+        addShape("RECTANGLE", List.of(40.0, 50.0));
 
-        String json = objectMapper.writeValueAsString(square);
+        UpdateShapeCommand updateShapeCommand = new UpdateShapeCommand();
+        updateShapeCommand.setId(shapeRepository.findAll().get(0).getId());
+        updateShapeCommand.setType("RECTANGLE");
+        updateShapeCommand.setParameters(List.of(10.0, 20.0));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/shapes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isCreated());
-
-        String response = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shapes/parameters?type=SQUARE&areafrom=20&areato=30"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        List<Square> responseObj = objectMapper.readValue(response, new TypeReference<>() {
-        });
-        Assertions.assertEquals("SQUARE", responseObj.get(0).getType());
-        Assertions.assertEquals(25.0, responseObj.get(0).getArea());
+        this.mockMvc.perform(put("/shapes")
+                .content(objectMapper.writeValueAsString(updateShapeCommand))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.width").value(10.0))
+                .andExpect(jsonPath("$.length").value(20.0));
     }
 
     @Test
-    public void shouldGetShapeByCustomParametersAndReturnStatusNotFound() throws Exception {
+    public void shouldDeleteShape() throws Exception {
+        addShape("RECTANGLE", List.of(40.0, 50.0));
 
-        CreateShapeCommand square = new CreateShapeCommand();
-        square.setParameters(new double[]{5.0});
-        square.setType("SQUARE");
+        this.mockMvc.perform(delete("/shapes/5"))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 
-        String json = objectMapper.writeValueAsString(square);
+    @Test
+    public void shouldThrowExceptionWhenObjectNotFound() throws Exception {
+        this.mockMvc.perform(delete("/shapes/100"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Shape with id: 100 not found"))
+                .andReturn();
+    }
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/shapes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isCreated());
-
-        String response = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/shapes/parameters?type=SQUARE&areafrom=20&areato=30"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        List<Square> responseObj = objectMapper.readValue(response, new TypeReference<>() {
-        });
-        Assertions.assertEquals("SQUARE", responseObj.get(0).getType());
-        Assertions.assertEquals(25.0, responseObj.get(0).getArea());
+    private void addShape(String type, List<Double> parameters) throws Exception {
+        CreateShapeCommand shapeCommand = new CreateShapeCommand();
+        shapeCommand.setType(type);
+        shapeCommand.setParameters(parameters);
+        this.mockMvc.perform(post("/shapes").content(objectMapper.writeValueAsString(shapeCommand))
+                .contentType(MediaType.APPLICATION_JSON)).andReturn();
     }
 }

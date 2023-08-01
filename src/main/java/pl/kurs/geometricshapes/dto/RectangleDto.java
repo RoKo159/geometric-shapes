@@ -3,24 +3,24 @@ package pl.kurs.geometricshapes.dto;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"id", "type", "width", "length", "version", "createdBy", "createdAt", "lastModifiedAt", "lastModifiedBy", "area", "perimeter"})
-public class RectangleDto extends ShapesDto {
+public class RectangleDto extends ShapeDto {
 
-    private double length;
-    private double width;
+    private Double width;
+    private Double length;
 
-    public double getLength() {
-        return length;
-    }
-
-    public void setLength(double length) {
-        this.length = length;
-    }
-
-    public double getWidth() {
+    public Double getWidth() {
         return width;
     }
 
-    public void setWidth(double width) {
+    public void setWidth(Double width) {
         this.width = width;
+    }
+
+    public Double getLength() {
+        return length;
+    }
+
+    public void setLength(Double length) {
+        this.length = length;
     }
 }
