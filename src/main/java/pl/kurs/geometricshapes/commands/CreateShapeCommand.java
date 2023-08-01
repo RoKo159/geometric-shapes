@@ -1,17 +1,17 @@
 package pl.kurs.geometricshapes.commands;
 
-import pl.kurs.geometricshapes.validators.SupportedShapeType;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
+import java.util.List;
 
 public class CreateShapeCommand {
 
     @NotBlank
-    @SupportedShapeType
     private String type;
+
     @NotEmpty
-    private double[] parameters;
+    private List<@Positive Double> parameters;
 
     public String getType() {
         return type;
@@ -21,11 +21,11 @@ public class CreateShapeCommand {
         this.type = type;
     }
 
-    public double[] getParameters() {
+    public List<Double> getParameters() {
         return parameters;
     }
 
-    public void setParameters(double[] parameters) {
+    public void setParameters(List<Double> parameters) {
         this.parameters = parameters;
     }
 }

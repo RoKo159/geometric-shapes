@@ -15,18 +15,6 @@ public class ExceptionResponseDto {
         this.timestamp = timestamp;
     }
 
-    public List<String> getErrorMessages() {
-        return errorMessages;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
     @Override
     public String toString() {
         return "ExceptionResponseDto{" +

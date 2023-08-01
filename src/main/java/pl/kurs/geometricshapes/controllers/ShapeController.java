@@ -1,72 +1,46 @@
 package pl.kurs.geometricshapes.controllers;
 
-import org.modelmapper.ModelMapper;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kurs.geometricshapes.commands.CreateShapeCommand;
 import pl.kurs.geometricshapes.commands.UpdateShapeCommand;
-import pl.kurs.geometricshapes.dto.ShapesDto;
-import pl.kurs.geometricshapes.models.Shapes;
-import pl.kurs.geometricshapes.strategy.ShapeStrategy;
+import pl.kurs.geometricshapes.dto.ShapeDto;
+import pl.kurs.geometricshapes.dto.StatusDto;
+import pl.kurs.geometricshapes.models.Shape;
+import pl.kurs.geometricshapes.services.ShapeService;
 
 import javax.validation.Valid;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/shapes")
 @Validated
+@RequestMapping("/api/v1/shapes")
 public class ShapeController {
+    private final ShapeService shapeService;
 
-    private ModelMapper modelMapper;
-    private Map<String, ShapeStrategy> shapeStrategies;
-
-    @Autowired
-    public ShapeController(ModelMapper modelMapper, List<ShapeStrategy> shapeStrategies) {
-        this.modelMapper = modelMapper;
-        this.shapeStrategies = shapeStrategies.stream()
-                .collect(Collectors.toMap(ShapeStrategy::getShapeType, Function.identity()));
+    public ShapeController(ShapeService shapeService) {
+        this.shapeService = shapeService;
     }
 
     @PostMapping
-    public ResponseEntity<ShapesDto> createShape(@RequestBody @Valid CreateShapeCommand shapeCommand) {
-        String shapeType = shapeCommand.getType().toLowerCase(Locale.ROOT);
-        ShapeStrategy shapeStrategy = shapeStrategies.get(shapeType);
-        Shapes shapesForSave = shapeStrategy.createShape(shapeCommand);
-        ShapesDto shapeDto = modelMapper.map(shapesForSave, shapeStrategy.getShapeDtoClass());
-        return ResponseEntity.status(HttpStatus.CREATED).body(shapeDto);
+    public ResponseEntity<ShapeDto> create(@RequestBody @Valid CreateShapeCommand createShapeCommand) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(shapeService.create(createShapeCommand));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ShapeDto>> findAll(@RequestParam(required = false) Map<String, String> queryParams) {
+        return ResponseEntity.status(HttpStatus.OK).body(shapeService.getShapes(queryParams));
     }
 
     @PutMapping
-    public ResponseEntity<ShapesDto> updateShape(@RequestBody @Valid UpdateShapeCommand command) {
-        String shapeType = command.getType().toLowerCase(Locale.ROOT);
-        ShapeStrategy shapeStrategy = shapeStrategies.get(shapeType);
-        Shapes updatedShape = shapeStrategy.updateShape(command);
-        ShapesDto shapeDto = modelMapper.map(updatedShape, shapeStrategy.getShapeDtoClass());
-        return ResponseEntity.status(HttpStatus.OK).body(shapeDto);
+    public ResponseEntity<Shape> updateShape(@RequestBody @Valid UpdateShapeCommand updateShapeCommand) {
+        return ResponseEntity.status(HttpStatus.OK).body(shapeService.update(updateShapeCommand));
     }
 
-    @GetMapping(value = "/parameters")
-    public ResponseEntity<List<ShapesDto>> getShapesByFilteredParameters(@RequestParam Map<String,String> allParams) {
-        List<ShapesDto> shapesDtoList = new ArrayList<>();
-        for (ShapeStrategy strategy : shapeStrategies.values()) {
-            List<Shapes> shapes = strategy.getShapesByFilteredParameters(allParams);
-            List<ShapesDto> shapesDtos = shapes.stream()
-                    .map(shape -> modelMapper.map(shape, strategy.getShapeDtoClass()))
-                    .collect(Collectors.toList());
-            shapesDtoList.addAll(shapesDtos);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(shapesDtoList);
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<StatusDto> deleteShape(@PathVariable("id") long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(shapeService.delete(id));
     }
-
-    //todo napisać metodę kasującą, poprawić walidację, obsłużyć wyjątki kiedy nie znajdzie odpowiedniego kształtu,
-    // napiać do tego odpowienie testy, poprawić to żeby area i perimeter nie były w modelu, upewnić się że na 100% nie trzeba modyfikować kodu by dodać nowy kształt,
-    // obejrzec filmik o liquidbase i upewnić sie ze jest dobrze zrobione, sprawdzić nazewnictwo metod referencji itd,
-    // sprawdzić o co dokłanie chodzi z wersionowaniem, zrobić to Sql view, żeby była w bazie danych tabela widok, który ma id figury oraz jej pole i obwód wiliczane z jej cech
-
 }

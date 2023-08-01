@@ -3,15 +3,15 @@ package pl.kurs.geometricshapes.dto;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"id", "type", "radius", "version", "createdBy", "createdAt", "lastModifiedAt", "lastModifiedBy", "area", "perimeter"})
-public class CircleDto extends ShapesDto {
+public class CircleDto extends ShapeDto {
 
-    private double radius;
+    private Double radius;
 
-    public double getRadius() {
+    public Double getRadius() {
         return radius;
     }
 
-    public void setRadius(double radius) {
+    public void setRadius(Double radius) {
         this.radius = radius;
     }
 }

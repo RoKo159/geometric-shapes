@@ -1,21 +1,19 @@
 package pl.kurs.geometricshapes.commands;
 
-import pl.kurs.geometricshapes.validators.SupportedShapeType;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.util.List;
 
 public class UpdateShapeCommand {
 
-    @NotNull
     private Long id;
-    @NotBlank
-    @SupportedShapeType
-    private String type;
-    @NotEmpty
-    private double[] parameters;
 
+    @NotBlank
+    private String type;
+
+    @NotEmpty
+    private List<@Positive Double> parameters;
 
     public Long getId() {
         return id;
@@ -33,11 +31,11 @@ public class UpdateShapeCommand {
         this.type = type;
     }
 
-    public double[] getParameters() {
+    public List<Double> getParameters() {
         return parameters;
     }
 
-    public void setParameters(double[] parameters) {
+    public void setParameters(List<Double> parameters) {
         this.parameters = parameters;
     }
 }
